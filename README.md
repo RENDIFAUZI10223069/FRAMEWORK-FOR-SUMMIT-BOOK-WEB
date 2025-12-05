@@ -56,7 +56,7 @@ Pastikan sistem Anda telah memiliki:
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/username/summit-book.git
+git clone https://github.com/RENDIFAUZI10223069/FRAMEWORK-FOR-SUMMIT-BOOK-WEB.git
 cd summit-book
 ```
 
@@ -83,7 +83,7 @@ pip install -r requirements.txt
 **Atau install manual:**
 
 ```bash
-pip install django==4.2.7
+pip install django==6.0
 pip install mysqlclient
 pip install django-bootstrap5
 pip install Pillow
@@ -401,9 +401,9 @@ Distributed under the MIT License. See `LICENSE` for more information.
 
 ## 👥 Tim Pengembang
 
-- **Project Lead** - [Nama Anda](https://github.com/username)
-- **Backend Developer** - [Nama](https://github.com/username)
-- **Frontend Developer** - [Nama](https://github.com/username)
+- **Project Lead** - [Rendi Fauzi](https://github.com/username)
+- **Backend Developer** - [Kinanti Nurfajriani Zulfia, Riyad Muhammad Robani](https://github.com/username)
+- **Frontend Developer** - [Muhammad Raihan Abduh, Nabil Abdul Basit](https://github.com/username)
 
 ---
 
