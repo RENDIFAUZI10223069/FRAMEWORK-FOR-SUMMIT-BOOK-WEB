@@ -1,0 +1,764 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Home - Booking Rinjani via Senaru{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, rgba(45, 80, 22, 0.9), rgba(74, 144, 226, 0.8)), 
+                    url('static/images/rinjani.jpg') center/cover;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .hero-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        opacity: 0.1;
+    }
+
+    .search-box {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .feature-card {
+        transition: all 0.3s ease;
+        border: none;
+        border-radius: 15px;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    .feature-icon {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #2D5016, #4A90E2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 2rem;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        text-align: center;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: scale(1.05);
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 700;
+        color: #2D5016;
+        margin: 10px 0;
+    }
+
+    .testimonial-card {
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        height: 100%;
+    }
+
+    .avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .price-badge {
+        background: linear-gradient(135deg, #2D5016, #4A90E2);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+    }
+
+    .section-title {
+        position: relative;
+        display: inline-block;
+        margin-bottom: 30px;
+    }
+
+    .section-title::after {
+        content: '';
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: linear-gradient(90deg, #2D5016, #4A90E2);
+        border-radius: 2px;
+    }
+
+    .btn-primary-custom {
+        background: linear-gradient(135deg, #2D5016, #4A90E2);
+        border: none;
+        padding: 12px 35px;
+        font-weight: 600;
+        border-radius: 50px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 20px rgba(45, 80, 22, 0.4);
+    }
+
+    .image-gallery img {
+        border-radius: 15px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+    }
+
+    .image-gallery img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+
+    .badge-custom {
+        background: #2D5016;
+        color: white;
+        padding: 8px 15px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<!-- HERO SECTION -->
+<section class="hero-section">
+    <div class="container position-relative" style="z-index: 2;">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <span class="badge badge-custom mb-3">
+                    <i class="bi bi-mountain"></i> Platform Resmi TNGL
+                </span>
+                <h1 class="display-3 fw-bold mb-4" data-aos="fade-up">
+                    Booking Pendakian<br>Gunung Rinjani
+                </h1>
+                <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">
+                    Jalur Senaru - Pendakian aman, mudah, dan terpercaya<br>
+                    Nikmati keindahan Danau Segara Anak dari puncak tertinggi Lombok
+                </p>
+
+                <!-- Search Box -->
+                <div class="search-box" data-aos="fade-up" data-aos-delay="200">
+                    <form action="#" method="GET">
+                        <div class="row g-3">
+                            <div class="col-md-5">
+                                <label class="form-label text-start d-block text-dark">
+                                    <i class="bi bi-calendar-event"></i> Tanggal Pendakian
+                                </label>
+                                <input type="date" name="date" class="form-control form-control-lg" 
+                                       min="{{ current_date|date:'Y-m-d' }}" required>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label text-start d-block text-dark">
+                                    <i class="bi bi-people"></i> Jumlah Pendaki
+                                </label>
+                                <select name="participants" class="form-select form-select-lg" required>
+                                    <option value="">Pilih...</option>
+                                    <option value="1">1 Orang</option>
+                                    <option value="2">2 Orang</option>
+                                    <option value="3">3 Orang</option>
+                                    <option value="4">4 Orang</option>
+                                    <option value="5">5+ Orang</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3 d-flex align-items-end">
+                                <button type="submit" class="btn btn-primary-custom w-100 btn-lg">
+                                    <i class="bi bi-search"></i> Cek Slot
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                    <p class="text-muted small mt-3 mb-0">
+                        <i class="bi bi-info-circle"></i> Booking minimal H-7 dari tanggal keberangkatan
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS SECTION -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <i class="bi bi-people-fill text-success" style="font-size: 2.5rem;"></i>
+                    <div class="stat-number">{{ stats.total_climbers }}+</div>
+                    <p class="text-muted mb-0">Pendaki Sukses</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <i class="bi bi-graph-up-arrow text-success" style="font-size: 2.5rem;"></i>
+                    <div class="stat-number">{{ stats.success_rate }}%</div>
+                    <p class="text-muted mb-0">Success Rate</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <i class="bi bi-person-badge text-success" style="font-size: 2.5rem;"></i>
+                    <div class="stat-number">{{ stats.guides }}+</div>
+                    <p class="text-muted mb-0">Pemandu Lokal</p>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-card">
+                    <i class="bi bi-award-fill text-success" style="font-size: 2.5rem;"></i>
+                    <div class="stat-number">{{ stats.years_experience }}+</div>
+                    <p class="text-muted mb-0">Tahun Berpengalaman</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ABOUT RINJANI SENARU -->
+<section class="py-5" style="padding: 80px 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-4 mb-lg-0">
+                <img src="static/images/𝚊𝚒𝚛 𝚝𝚎𝚛𝚓𝚞𝚗 𝚐𝚞𝚗𝚞𝚗𝚐 𝚛𝚒𝚗𝚓𝚊𝚗𝚒.jpeg" 
+                     alt="Gunung Rinjani" class="img-fluid rounded shadow-lg">
+            </div>
+            <div class="col-lg-6">
+                <span class="badge bg-success mb-3">Jalur Senaru</span>
+                <h2 class="display-5 fw-bold mb-4">Gunung Rinjani via Senaru</h2>
+                <p class="text-muted mb-4">
+                    Jalur Senaru adalah rute pendakian paling populer menuju puncak Gunung Rinjani (3.726 mdpl). 
+                    Dimulai dari Desa Senaru, Lombok Utara, jalur ini menawarkan pemandangan spektakuler 
+                    Danau Segara Anak dan Air Terjun Sendang Gile.
+                </p>
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-geo-alt-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>Lokasi</strong>
+                                <p class="mb-0 text-muted small">Senaru, Lombok Utara</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-clock-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>Durasi</strong>
+                                <p class="mb-0 text-muted small">2-3 Hari</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-speedometer text-success me-2" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>Tingkat</strong>
+                                <p class="mb-0 text-muted small">Menengah - Sulit</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-arrow-up-circle-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong>Ketinggian</strong>
+                                <p class="mb-0 text-muted small">3.726 mdpl</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <a href="#" class="btn btn-primary-custom btn-lg">
+                    <i class="bi bi-info-circle"></i> Info Lengkap Jalur Senaru
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FEATURES SECTION -->
+<section class="py-5 bg-light" style="padding: 80px 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold section-title">Kenapa Pilih Summit Book?</h2>
+            <p class="text-muted">Platform booking terpercaya untuk pendakian Rinjani</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-shield-check"></i>
+                        </div>
+                        <h4 class="mb-3">Resmi & Aman</h4>
+                        <p class="text-muted">
+                            Terdaftar resmi di TNGL (Taman Nasional Gunung Rinjani) dengan izin lengkap. 
+                            Sistem booking aman dengan pembayaran terverifikasi.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-calendar-check"></i>
+                        </div>
+                        <h4 class="mb-3">Booking Mudah</h4>
+                        <p class="text-muted">
+                            Cek slot tersedia secara real-time, pilih tanggal, bayar online, dan terima 
+                            konfirmasi instant. Semua bisa dilakukan dalam 5 menit!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h4 class="mb-3">Pemandu Lokal</h4>
+                        <p class="text-muted">
+                            Didampingi pemandu lokal Senaru berpengalaman dan bersertifikat. 
+                            Keselamatan dan kenyamanan Anda adalah prioritas kami.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-wallet2"></i>
+                        </div>
+                        <h4 class="mb-3">Harga Transparan</h4>
+                        <p class="text-muted">
+                            Tidak ada biaya tersembunyi. Semua sudah include: pemandu, porter, 
+                            tenda, makanan 3x sehari, dan perlengkapan pendakian.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-qr-code"></i>
+                        </div>
+                        <h4 class="mb-3">Check-in Digital</h4>
+                        <p class="text-muted">
+                            Sistem check-in modern dengan QR code. Upload KTP sekali, 
+                            scan saat tiba di basecamp. Cepat dan paperless!
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card feature-card h-100 shadow-sm">
+                    <div class="card-body text-center p-4">
+                        <div class="feature-icon">
+                            <i class="bi bi-headset"></i>
+                        </div>
+                        <h4 class="mb-3">Support 24/7</h4>
+                        <p class="text-muted">
+                            Tim customer service kami siap membantu via WhatsApp, email, 
+                            atau telepon. Ada kendala? Kami ada untuk Anda.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PACKAGE PRICING -->
+<section class="py-5" style="padding: 80px 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold section-title">Paket Pendakian Senaru</h2>
+            <p class="text-muted">Pilih paket sesuai kebutuhan Anda</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- 2 Hari 1 Malam -->
+            <div class="col-lg-4">
+                <div class="card h-100 shadow-lg border-0">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <span class="badge bg-secondary mb-2">Paket Hemat</span>
+                            <h3 class="fw-bold">2 Hari 1 Malam</h3>
+                            <div class="my-3">
+                                <span class="display-4 fw-bold text-success">Rp 1,2</span>
+                                <span class="text-muted">juta/orang</span>
+                            </div>
+                        </div>
+
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pos 1 - Danau Segara Anak</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pemandu lokal Senaru</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Porter & tenda</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Makan 3x</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Perlengkapan camping</li>
+                            <li class="mb-2 text-muted"><i class="bi bi-x-circle me-2"></i>Summit attack</li>
+                        </ul>
+
+                        <button class="btn btn-outline-success w-100 btn-lg">Pilih Paket</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3 Hari 2 Malam (POPULAR) -->
+            <div class="col-lg-4">
+                <div class="card h-100 shadow-lg border-success" style="border-width: 3px !important;">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <span class="badge badge-custom mb-2">
+                                <i class="bi bi-star-fill"></i> Paling Populer
+                            </span>
+                            <h3 class="fw-bold">3 Hari 2 Malam</h3>
+                            <div class="my-3">
+                                <span class="display-4 fw-bold text-success">Rp 1,8</span>
+                                <span class="text-muted">juta/orang</span>
+                            </div>
+                        </div>
+
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pos 1 - Puncak - Danau</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pemandu berpengalaman</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Porter & tenda premium</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Makan 5x</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Perlengkapan lengkap</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Summit attack 3.726 mdpl</strong></li>
+                        </ul>
+
+                        <button class="btn btn-primary-custom w-100 btn-lg">Pilih Paket</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 Hari 3 Malam -->
+            <div class="col-lg-4">
+                <div class="card h-100 shadow-lg border-0">
+                    <div class="card-body p-4">
+                        <div class="text-center mb-4">
+                            <span class="badge bg-warning text-dark mb-2">Paket Premium</span>
+                            <h3 class="fw-bold">4 Hari 3 Malam</h3>
+                            <div class="my-3">
+                                <span class="display-4 fw-bold text-success">Rp 2,5</span>
+                                <span class="text-muted">juta/orang</span>
+                            </div>
+                        </div>
+
+                        <ul class="list-unstyled mb-4">
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Full explore Senaru</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pemandu + fotografer</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Porter premium</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Makan 7x (menu premium)</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Perlengkapan pro</li>
+                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Summit + Hot spring</strong></li>
+                        </ul>
+
+                        <button class="btn btn-outline-success w-100 btn-lg">Pilih Paket</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <p class="text-muted">
+                <i class="bi bi-info-circle"></i> Harga per orang, minimal 2 orang pendaki. 
+                <a href="#" class="text-success">Lihat detail harga →</a>
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- GALLERY -->
+<section class="py-5 bg-dark text-white" style="padding: 80px 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold">Galeri Rinjani Senaru</h2>
+            <p class="text-muted">Keindahan yang menanti Anda di puncak</p>
+        </div>
+
+        <div class="row g-3 image-gallery">
+            <div class="col-md-4">
+                <img src="static/images/Mount Rinjani awesome viewes via Torean route.jpeg" 
+                     alt="Puncak Rinjani" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+            </div>
+            <div class="col-md-4">
+                <img src="static/images/Rinjani mountain.jpeg" 
+                     alt="Sunrise Rinjani" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+            </div>
+            <div class="col-md-4">
+                <img src="static/images/Danau Segara Anak, Nusa Tenggara Barat.jpeg" 
+                     alt="Danau Segara Anak" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+            </div>
+            <div class="col-md-6">
+                <img src="static/images/Explore Rinjani Mountain_ Trekking Information & Lombok Volcano Adventure.jpeg" 
+                     alt="Camp Site" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+            </div>
+            <div class="col-md-6">
+                <img src="static/images/Rinjani in panorama.jpeg" 
+                     alt="Trail Senaru" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="py-5" style="padding: 80px 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold section-title">Kata Mereka</h2>
+            <p class="text-muted">Pengalaman pendaki yang telah menaklukkan Rinjani</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://i.pravatar.cc/60?img=1" alt="User" class="avatar me-3">
+                        <div>
+                            <h6 class="mb-0 fw-bold">Budi Santoso</h6>
+                            <small class="text-muted">Jakarta, Indonesia</small>
+                            <div class="text-warning">
+                                ★★★★★
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">
+                        "Pengalaman luar biasa! Booking mudah, pemandu ramah dan profesional. 
+                        Pemandangan dari puncak Rinjani via Senaru benar-benar worth it. 
+                        Highly recommended untuk first timer!"
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://i.pravatar.cc/60?img=5" alt="User" class="avatar me-3">
+                        <div>
+                            <h6 class="mb-0 fw-bold">Siti Nurhaliza</h6>
+                            <small class="text-muted">Bandung, Indonesia</small>
+                            <div class="text-warning">
+                                ★★★★★
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">
+                        "Sistem check-in dengan QR code sangat memudahkan. Tidak perlu antri lama. 
+                        Peralatan camping yang disediakan juga bagus dan bersih. 
+                        Team Summit Book sangat membantu dari awal sampai akhir!"
+                    </p>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="testimonial-card">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="https://i.pravatar.cc/60?img=8" alt="User" class="avatar me-3">
+                        <div>
+                            <h6 class="mb-0 fw-bold">Ahmad Yani</h6>
+                            <small class="text-muted">Surabaya, Indonesia</small>
+                            <div class="text-warning">
+                                ★★★★★
+                            </div>
+                        </div>
+                    </div>
+                    <p class="text-muted mb-0">
+                        "Paket 3D2N via jalur Senaru sangat worth it! 
+                        Sunrise dari puncak spektakuler, Danau Segara Anak indah banget. 
+                        Porter dan guide sangat helpful. Terima kasih Summit Book!"
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA SECTION -->
+<section class="py-5 text-white" style="background: linear-gradient(135deg, #2D5016, #4A90E2); padding: 80px 0;">
+    <div class="container text-center">
+        <h2 class="display-4 fw-bold mb-4">Siap Mendaki Rinjani?</h2>
+        <p class="lead mb-4">
+            Booking sekarang dan dapatkan early bird discount 10% untuk bulan depan!
+        </p>
+        <div class="d-flex gap-3 justify-content-center flex-wrap">
+            <a href="#" class="btn btn-light btn-lg px-5">
+                <i class="bi bi-calendar-check"></i> Booking Sekarang
+            </a>
+            <a href="#" class="btn btn-outline-light btn-lg px-5">
+                <i class="bi bi-whatsapp"></i> Hubungi Kami
+            </a>
+        </div>
+        <p class="mt-4 mb-0">
+            <i class="bi bi-shield-check"></i> Pembayaran aman & terpercaya
+        </p>
+    </div>
+</section>
+
+<!-- FAQ SECTION -->
+<section class="py-5 bg-light" style="padding: 80px 0;">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-5 fw-bold section-title">FAQ</h2>
+            <p class="text-muted">Pertanyaan yang sering diajukan</p>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="accordion" id="faqAccordion">
+                    <!-- FAQ 1 -->
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                Apa saja yang sudah include dalam paket?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Paket sudah include: Pemandu lokal bersertifikat, porter untuk bawa logistik, 
+                                tenda camping, sleeping bag, matras, makanan 3x sehari, snack, air mineral, 
+                                perlengkapan masak, izin masuk TNGL, sertifikat pendakian, dan dokumentasi foto.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                Berapa lama perjalanan dari Jakarta/Bali ke Senaru?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Dari Jakarta: Penerbangan ke Lombok (2 jam) + perjalanan darat ke Senaru (3-4 jam). 
+                                Dari Bali: Fast boat ke Lombok (2 jam) + darat ke Senaru (3-4 jam). 
+                                Kami bisa bantu arrange transportasi dari bandara/pelabuhan.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                Kapan waktu terbaik mendaki Rinjani via Senaru?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                April - November (musim kering). Peak season: Juli-Agustus. 
+                                Desember - Maret ditutup karena musim hujan dan risiko longsor tinggi. 
+                                Booking paling baik 1-2 bulan sebelum keberangkatan.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 4 -->
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                Apakah pemula bisa mendaki Rinjani?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Bisa! Tapi harus prepare fisik minimal 1 bulan sebelumnya (jogging, cardio). 
+                                Jalur Senaru cocok untuk pemula dengan pemandu. Kami sarankan ambil paket 3D2N 
+                                agar tidak terburu-buru dan bisa aklimatisasi dengan baik.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FAQ 5 -->
+                    <div class="accordion-item border-0 shadow-sm mb-3">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                Bagaimana cara pembayaran dan refund policy?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body">
+                                Pembayaran via transfer bank/e-wallet/credit card. DP 50% saat booking, 
+                                pelunasan H-7. Refund 100% jika cancel H-14, refund 50% jika cancel H-7 sampai H-3, 
+                                no refund jika cancel kurang dari H-3. Force majeure (cuaca ekstrem) full refund atau reschedule.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Auto-update minimum date in date picker
+    document.addEventListener('DOMContentLoaded', function() {
+        const dateInput = document.querySelector('input[type="date"]');
+        if(dateInput) {
+            const today = new Date();
+            today.setDate(today.getDate() + 7); // Minimal H-7
+            const minDate = today.toISOString().split('T')[0];
+            dateInput.min = minDate;
+        }
+    });
+</script>
+{% endblock %}

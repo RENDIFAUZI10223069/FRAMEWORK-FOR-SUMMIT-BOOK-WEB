@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'checkins.apps.CheckinsConfig',
     'dashboard.apps.DashboardConfig',
     'core.apps.CoreConfig',
+    
 ]
 
 MIDDLEWARE = [
@@ -70,7 +71,7 @@ ROOT_URLCONF = 'summit_book_project.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
