@@ -1,0 +1,42 @@
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show shadow-sm" 
+             role="alert" style="border-left: 4px solid;">
+            <div class="d-flex align-items-start">
+                <div class="me-3" style="font-size: 1.5rem;">
+                    {% if message.tags == 'error' or message.tags == 'danger' %}
+                        <i class="bi bi-exclamation-triangle-fill text-danger"></i>
+                    {% elif message.tags == 'success' %}
+                        <i class="bi bi-check-circle-fill text-success"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="bi bi-exclamation-circle-fill text-warning"></i>
+                    {% elif message.tags == 'info' %}
+                        <i class="bi bi-info-circle-fill text-info"></i>
+                    {% else %}
+                        <i class="bi bi-bell-fill"></i>
+                    {% endif %}
+                </div>
+                <div class="flex-grow-1">
+                    <strong>
+                        {% if message.tags == 'error' or message.tags == 'danger' %}
+                            Error!
+                        {% elif message.tags == 'success' %}
+                            Berhasil!
+                        {% elif message.tags == 'warning' %}
+                            Perhatian!
+                        {% elif message.tags == 'info' %}
+                            Informasi
+                        {% endif %}
+                    </strong>
+                    <p class="mb-0 mt-1">{{ message }}</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- Toast Container for JavaScript Toasts -->
+<div id="toastContainer" class="position-fixed top-0 end-0 p-3" style="z-index: 9999;"></div>

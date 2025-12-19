@@ -1,0 +1,8 @@
+pip install django==6.0
+pip install mysqlclient
+pip install django-bootstrap5
+pip install Pillow
+pip install django-crispy-forms crispy-bootstrap5
+pip install python-decouple
+pip install qrcode[pil]
+pip install django-widget-tweaks

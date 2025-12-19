@@ -1,0 +1,112 @@
+{% load static %}
+
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top shadow-sm" style="background-color: #2D5016;">
+    <div class="container">
+        <!-- Logo/Brand -->
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+            <i class="bi bi-mountain me-2" style="font-size: 1.5rem;"></i>
+            <span>Summit Book</span>
+        </a>
+        
+        <!-- Mobile Toggle Button -->
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" 
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        
+        <!-- Navigation Links -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-lg-center">
+                <!-- Home -->
+                <li class="nav-item">
+                    <a class="nav-link {% if request.path == '/' %}active{% endif %}" href="/">
+                        <i class="bi bi-house-door"></i> Home
+                    </a>
+                </li>
+                
+                <!-- Rinjani Senaru -->
+                <li class="nav-item">
+                    <a class="nav-link {% if 'mountains' in request.path %}active{% endif %}" href="#">
+                        <i class="bi bi-geo-alt"></i> Rinjani Senaru
+                    </a>
+                </li>
+                
+                <!-- Booking -->
+                <li class="nav-item">
+                    <a class="nav-link {% if 'bookings' in request.path %}active{% endif %}" href="#">
+                        <i class="bi bi-calendar-check"></i> Booking
+                    </a>
+                </li>
+
+                <!-- Kontak -->
+                <li class="nav-item">
+                    <a class="nav-link {% if 'contact' in request.path %}active{% endif %}" href="#">
+                        <i class="bi bi-telephone"></i> Kontak
+                    </a>
+                </li>
+
+                <!-- Divider (hanya di desktop) -->
+                <li class="nav-item d-none d-lg-block">
+                    <div class="vr mx-2" style="height: 30px; opacity: 0.3;"></div>
+                </li>
+                
+                {% if user.is_authenticated %}
+                    <!-- User Logged In -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" 
+                           role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <div class="bg-white rounded-circle d-flex align-items-center justify-content-center me-2" 
+                                 style="width: 32px; height: 32px;">
+                                <i class="bi bi-person-fill text-success"></i>
+                            </div>
+                            <span class="d-none d-lg-inline">{{ user.username|title }}</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-speedometer2 me-2"></i> Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-calendar-event me-2"></i> Booking Saya
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">
+                                    <i class="bi bi-person me-2"></i> Profil
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% if user.is_staff %}
+                            <li>
+                                <a class="dropdown-item text-warning" href="/admin/" target="_blank">
+                                    <i class="bi bi-gear me-2"></i> Admin Panel
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            {% endif %}
+                            <li>
+                                <a class="dropdown-item text-danger" href="#">
+                                    <i class="bi bi-box-arrow-right me-2"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                {% else %}
+                    <!-- User Not Logged In -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2">
+                        <a class="btn btn-light btn-sm px-3" href="#">
+                            <i class="bi bi-person-plus"></i> Daftar
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>
