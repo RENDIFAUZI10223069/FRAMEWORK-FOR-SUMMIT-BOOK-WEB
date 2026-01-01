@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Summit Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-mountain {
+        height: 500px;
+        background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1920') center/cover;
+        color: white;
+        display: flex;
+        align-items: center;
+    }
+    
+    .info-card {
+        border-left: 4px solid #2D5016;
+    }
+    
+    .facility-item {
+        transition: all 0.3s ease;
+    }
+    
+    .facility-item:hover {
+        transform: translateX(5px);
+        color: #2D5016;
+    }
+    
+    .gpx-download-card {
+        background: linear-gradient(135deg, #2D5016 0%, #4a7c2b 100%);
+        color: white;
+        border-radius: 10px;
+        transition: transform 0.3s ease;
+    }
+    
+    .gpx-download-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-mountain">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <span class="badge bg-success mb-3">Jalur Populer</span>
+                <h1 class="display-3 fw-bold mb-3">{{ mountain.name }}</h1>
+                <h3 class="mb-4">{{ route.name }}</h3>
+                <div class="d-flex gap-4 mb-4">
+                    <div>
+                        <i class="bi bi-geo-alt-fill me-2"></i>
+                        <strong>{{ route.starting_point }}</strong>
+                    </div>
+                    <div>
+                        <i class="bi bi-arrow-up-circle-fill me-2"></i>
+                        <strong>{{ mountain.height }} mdpl</strong>
+                    </div>
+                    <div>
+                        <i class="bi bi-clock-fill me-2"></i>
+                        <strong>{{ route.get_duration_text }}</strong>
+                    </div>
+                </div>
+                <a href="#booking" class="btn btn-success btn-lg">
+                    <i class="bi bi-calendar-check me-2"></i>Booking Sekarang
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Info Cards -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-3">
+                <div class="card info-card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-speedometer text-success" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">Tingkat Kesulitan</h5>
+                        <p class="text-muted mb-0">{{ route.get_difficulty_level_display }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card info-card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-signpost text-success" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">Jarak Tempuh</h5>
+                        <p class="text-muted mb-0">{{ route.distance_km }} KM</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card info-card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-people text-success" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">Maks Peserta</h5>
+                        <p class="text-muted mb-0">{{ route.max_participants }} Orang/Grup</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card info-card h-100 border-0 shadow-sm">
+                    <div class="card-body text-center">
+                        <i class="bi bi-wallet2 text-success" style="font-size: 3rem;"></i>
+                        <h5 class="mt-3">Harga</h5>
+                        <p class="text-muted mb-0">Rp {{ route.price_per_person|floatformat:0 }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Deskripsi -->
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <h2 class="fw-bold mb-4">Tentang {{ route.name }}</h2>
+                <p class="lead">{{ route.description }}</p>
+                
+                <!-- GPX Download Card (Enhanced) -->
+                {% if route.gpx_file %}
+                <div class="gpx-download-card p-4 my-4 shadow">
+                    <div class="row align-items-center">
+                        <div class="col-md-8">
+                            <div class="d-flex align-items-center mb-2">
+                                <i class="bi bi-map-fill me-3" style="font-size: 2.5rem;"></i>
+                                <div>
+                                    <h5 class="mb-1 fw-bold">File GPX Tersedia</h5>
+                                    <p class="mb-0 opacity-75">Download jalur untuk GPS tracker atau smartphone Anda</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                            <a href="{{ route.gpx_file.url }}" class="btn btn-light btn-lg fw-bold" download>
+                                <i class="bi bi-download me-2"></i>Download GPX
+                            </a>
+                        </div>
+                    </div>
+                    <div class="mt-3 pt-3 border-top border-white border-opacity-25">
+                        <small class="opacity-75">
+                            <i class="bi bi-info-circle me-1"></i>
+                            File GPX dapat dibuka dengan aplikasi seperti Google Maps, Gaia GPS, atau perangkat GPS handheld
+                        </small>
+                    </div>
+                </div>
+                {% endif %}
+                
+                <h3 class="fw-bold mt-5 mb-3">Fasilitas yang Disediakan</h3>
+                <div class="row">
+                    {% for facility in route.get_facilities_list %}
+                    <div class="col-md-6 mb-2">
+                        <div class="facility-item">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            {{ facility }}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <h3 class="fw-bold mt-5 mb-3">Persyaratan Pendakian</h3>
+                <div class="alert alert-warning">
+                    <ul class="mb-0">
+                        {% for req in route.get_requirements_list %}
+                        <li>{{ req }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card shadow-sm sticky-top" style="top: 20px;" id="booking">
+                    <div class="card-body">
+                        <h4 class="fw-bold mb-3">Booking {{ route.name }}</h4>
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span>Harga per orang:</span>
+                                <strong class="text-success">Rp {{ route.price_per_person|floatformat:0 }}</strong>
+                            </div>
+                            <small class="text-muted">Sudah termasuk semua fasilitas</small>
+                        </div>
+                        <hr>
+                        <a href="#" class="btn btn-success w-100 btn-lg">
+                            <i class="bi bi-calendar-check me-2"></i>Mulai Booking
+                        </a>
+                        <p class="text-center mt-3 mb-0">
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check me-1"></i>Pembayaran Aman
+                            </small>
+                        </p>
+                        
+                        <!-- GPX Quick Download in Sidebar -->
+                        {% if route.gpx_file %}
+                        <hr>
+                        <div class="text-center">
+                            <a href="{{ route.gpx_file.url }}" class="btn btn-outline-success w-100" download>
+                                <i class="bi bi-map me-2"></i>Download Route GPX
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Gallery -->
+{% if gallery %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <h2 class="fw-bold mb-4 text-center">Galeri {{ route.name }}</h2>
+        <div class="row g-3">
+            {% for photo in gallery %}
+            <div class="col-md-4">
+                <img src="{{ photo.image.url }}" alt="{{ photo.title }}" 
+                     class="img-fluid rounded shadow-sm" style="height: 250px; width: 100%; object-fit: cover;">
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

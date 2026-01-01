@@ -1,0 +1,156 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pilih Role - Summit Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    .choice-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 60px 0;
+    }
+    
+    .role-card {
+        background: white;
+        border-radius: 20px;
+        padding: 40px;
+        text-align: center;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        height: 100%;
+        cursor: pointer;
+        border: 3px solid transparent;
+    }
+    
+    .role-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        border-color: #2D5016;
+    }
+    
+    .role-icon {
+        width: 120px;
+        height: 120px;
+        background: linear-gradient(135deg, #2D5016, #4A90E2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: white;
+        font-size: 3.5rem;
+    }
+    
+    .role-card.admin .role-icon {
+        background: linear-gradient(135deg, #FF6B6B, #FFE66D);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="choice-container">
+    <div class="container">
+        <div class="text-center mb-5">
+            <i class="bi bi-mountain text-success" style="font-size: 4rem;"></i>
+            <h1 class="display-4 fw-bold mt-3 mb-3">Selamat Datang di Summit Book</h1>
+            <p class="lead text-muted">Pilih role Anda untuk melanjutkan registrasi</p>
+        </div>
+        
+        <div class="row justify-content-center g-4">
+            <!-- Pendaki Card -->
+            <div class="col-lg-5 col-md-6">
+                <a href="{% url 'accounts:register_pendaki' %}" class="text-decoration-none">
+                    <div class="role-card">
+                        <div class="role-icon">
+                            <i class="bi bi-person-hiking"></i>
+                        </div>
+                        <h3 class="fw-bold mb-3">Pendaki</h3>
+                        <p class="text-muted mb-4">
+                            Saya ingin booking pendakian Gunung Rinjani via Jalur Senaru dan 
+                            menikmati keindahan alamnya
+                        </p>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Booking online 24/7
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Check-in digital
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Riwayat pendakian
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                Tracking booking real-time
+                            </li>
+                        </ul>
+                        <div class="btn btn-success w-100 mt-3">
+                            <i class="bi bi-arrow-right me-2"></i>Daftar sebagai Pendaki
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Admin Card -->
+            <div class="col-lg-5 col-md-6">
+                <a href="{% url 'accounts:register_admin' %}" class="text-decoration-none">
+                    <div class="role-card admin">
+                        <div class="role-icon">
+                            <i class="bi bi-shield-lock"></i>
+                        </div>
+                        <h3 class="fw-bold mb-3">Admin</h3>
+                        <p class="text-muted mb-4">
+                            Saya adalah staff/pengelola yang akan mengelola sistem booking dan 
+                            operasional pendakian
+                        </p>
+                        <ul class="list-unstyled text-start">
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-warning me-2"></i>
+                                Kelola booking pendaki
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-warning me-2"></i>
+                                Dashboard & laporan
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-warning me-2"></i>
+                                Verifikasi check-in
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-check-circle-fill text-warning me-2"></i>
+                                Manajemen slot & harga
+                            </li>
+                        </ul>
+                        <div class="btn btn-warning w-100 mt-3">
+                            <i class="bi bi-arrow-right me-2"></i>Daftar sebagai Admin
+                        </div>
+                        <p class="text-muted small mt-3 mb-0">
+                            <i class="bi bi-info-circle"></i> Memerlukan kode rahasia admin
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Back to Home -->
+        <div class="text-center mt-5">
+            <p class="mb-2">Sudah punya akun?</p>
+            <a href="{% url 'accounts:login' %}" class="btn btn-outline-success btn-lg px-5">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+            </a>
+        </div>
+        
+        <div class="text-center mt-3">
+            <a href="{% url 'core:home' %}" class="text-dark text-decoration-none">
+                <i class="bi bi-arrow-left me-2"></i>Kembali ke Beranda
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Login - Summit Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    }
+    
+    .login-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .login-image {
+        background: linear-gradient(135deg, rgba(45, 80, 22, 0.9), rgba(74, 144, 226, 0.9)), 
+                    url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800') center/cover;
+        min-height: 500px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        padding: 40px;
+    }
+    
+    .login-form {
+        padding: 60px 40px;
+    }
+    
+    .form-control-lg {
+        padding: 15px 20px;
+        font-size: 1rem;
+    }
+    
+    .social-login {
+        border: 2px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    .social-login:hover {
+        border-color: #2D5016;
+        background-color: #f8f9fa;
+    }
+    
+    @media (max-width: 768px) {
+        .login-image {
+            min-height: 300px;
+        }
+        .login-form {
+            padding: 40px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="login-card">
+                    <div class="row g-0">
+                        <!-- Image Side -->
+                        <div class="col-lg-5 d-none d-lg-block">
+                            <div class="login-image">
+                                <div class="text-center">
+                                    <i class="bi bi-mountain" style="font-size: 5rem; margin-bottom: 20px;"></i>
+                                    <h2 class="fw-bold mb-3">Selamat Datang Kembali!</h2>
+                                    <p class="mb-0">
+                                        Login untuk melanjutkan booking dan melihat riwayat pendakian Anda
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Form Side -->
+                        <div class="col-lg-7">
+                            <div class="login-form">
+                                <!-- Header -->
+                                <div class="text-center mb-4">
+                                    <h3 class="fw-bold">Login ke Akun Anda</h3>
+                                    <p class="text-muted">Masukkan email dan password Anda</p>
+                                </div>
+                                
+                                <!-- Login Form -->
+                                <form method="POST">
+                                    {% csrf_token %}
+                                    
+                                    <!-- Email -->
+                                    <div class="mb-3">
+                                        <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
+                                            <i class="bi bi-envelope me-2"></i>{{ form.username.label }}
+                                        </label>
+                                        {{ form.username }}
+                                        {% if form.username.errors %}
+                                            <div class="text-danger small mt-1">
+                                                {{ form.username.errors.0 }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Password -->
+                                    <div class="mb-3">
+                                        <label for="{{ form.password.id_for_label }}" class="form-label fw-semibold">
+                                            <i class="bi bi-lock me-2"></i>{{ form.password.label }}
+                                        </label>
+                                        <div class="input-group">
+                                            {{ form.password }}
+                                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                                <i class="bi bi-eye" id="toggleIcon"></i>
+                                            </button>
+                                        </div>
+                                        {% if form.password.errors %}
+                                            <div class="text-danger small mt-1">
+                                                {{ form.password.errors.0 }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    
+                                    <!-- Remember Me & Forgot Password -->
+                                    <div class="d-flex justify-content-between align-items-center mb-4">
+                                        <div class="form-check">
+                                            {{ form.remember_me }}
+                                            <label class="form-check-label" for="{{ form.remember_me.id_for_label }}">
+                                                {{ form.remember_me.label }}
+                                            </label>
+                                        </div>
+                                        <a href="#" class="text-success text-decoration-none">
+                                            <small>Lupa Password?</small>
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Non-field errors -->
+                                    {% if form.non_field_errors %}
+                                        <div class="alert alert-danger">
+                                            {{ form.non_field_errors }}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="btn btn-lg w-100 text-white mb-3" 
+                                            style="background: linear-gradient(135deg, #2D5016, #4A90E2); border: none;">
+                                        <i class="bi bi-box-arrow-in-right me-2"></i>Login
+                                    </button>
+                                    
+                                    <!-- Divider -->
+                                    <div class="position-relative my-4">
+                                        <hr>
+                                        <span class="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
+                                            atau
+                                        </span>
+                                    </div>
+                                    
+                                    <!-- Social Login (Optional - untuk fase berikutnya) -->
+                                    <div class="row g-2 mb-4">
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-outline-secondary w-100 social-login" disabled>
+                                                <i class="bi bi-google me-2"></i>Google
+                                            </button>
+                                        </div>
+                                        <div class="col-6">
+                                            <button type="button" class="btn btn-outline-secondary w-100 social-login" disabled>
+                                                <i class="bi bi-facebook me-2"></i>Facebook
+                                            </button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Register Link -->
+                                    <p class="text-center mb-0">
+                                        Belum punya akun? 
+                                        <a href="{% url 'accounts:register' %}" class="text-success fw-bold">
+                                            Daftar Sekarang
+                                        </a>
+                                    </p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Back to Home -->
+                <div class="text-center mt-4">
+                    <a href="{% url 'core:home' %}" class="text-dark text-decoration-none">
+                        <i class="bi bi-arrow-left me-2"></i>Kembali ke Beranda
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Toggle Password Visibility
+    document.getElementById('togglePassword').addEventListener('click', function() {
+        const passwordInput = document.getElementById('{{ form.password.id_for_label }}');
+        const toggleIcon = document.getElementById('toggleIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            toggleIcon.classList.remove('bi-eye');
+            toggleIcon.classList.add('bi-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            toggleIcon.classList.remove('bi-eye-slash');
+            toggleIcon.classList.add('bi-eye');
+        }
+    });
+</script>
+{% endblock %}
