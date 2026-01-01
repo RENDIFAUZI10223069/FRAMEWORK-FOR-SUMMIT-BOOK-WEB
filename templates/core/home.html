@@ -5,154 +5,637 @@
 
 {% block extra_css %}
 <style>
+    :root {
+        --primary: #1a5f3f;
+        --primary-light: #2d8659;
+        --primary-dark: #0f3d28;
+        --accent: #ff6b35;
+        --accent-light: #ff8c5f;
+        --bg-light: #f8fafc;
+        --text-dark: #1e293b;
+        --text-muted: #64748b;
+        --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+        --shadow-md: 0 4px 20px rgba(0,0,0,0.08);
+        --shadow-lg: 0 10px 40px rgba(0,0,0,0.12);
+        --radius: 16px;
+        --radius-xl: 24px;
+    }
+
+    * {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        color: var(--text-dark);
+        line-height: 1.6;
+    }
+
+    /* HERO SECTION - Modern Glassmorphism */
     .hero-section {
-        background: linear-gradient(135deg, rgba(45, 80, 22, 0.9), rgba(74, 144, 226, 0.8)), 
-                    url('static/images/rinjani.jpg') center/cover;
-        min-height: 600px;
+        position: relative;
+        min-height: 100vh;
         display: flex;
         align-items: center;
+        background: linear-gradient(135deg, #0f3d28 0%, #1a5f3f 50%, #2d8659 100%);
+        overflow: hidden;
+    }
+
+    .hero-bg {
+        position: absolute;
+        inset: 0;
+        background: url('static/images/rinjani.jpg') center/cover;
+        opacity: 0.15;
+        filter: blur(2px);
+    }
+
+    .hero-overlay {
+        position: absolute;
+        inset: 0;
+        background: 
+            radial-gradient(circle at 20% 50%, rgba(255,107,53,0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 80%, rgba(45,134,89,0.15) 0%, transparent 50%);
+    }
+
+    .hero-pattern {
+        position: absolute;
+        inset: 0;
+        background-image: 
+            radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+        background-size: 40px 40px;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 10;
+    }
+
+    .badge-floating {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: rgba(255,255,255,0.15);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 100px;
         color: white;
+        font-size: 0.875rem;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+        animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
+    }
+
+    .hero-title {
+        font-size: clamp(2.5rem, 6vw, 4.5rem);
+        font-weight: 800;
+        line-height: 1.1;
+        margin: 24px 0;
+        color: white;
+        text-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        letter-spacing: -0.02em;
+    }
+
+    .hero-subtitle {
+        font-size: clamp(1rem, 2vw, 1.25rem);
+        color: rgba(255,255,255,0.9);
+        margin-bottom: 48px;
+        font-weight: 400;
+    }
+
+    /* GLASS SEARCH BOX */
+    .search-box {
+        background: rgba(255,255,255,0.95);
+        backdrop-filter: blur(30px);
+        border: 1px solid rgba(255,255,255,0.3);
+        border-radius: var(--radius-xl);
+        padding: 40px;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .form-control, .form-select {
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 14px 16px;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-control:focus, .form-select:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(26,95,63,0.1);
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: var(--text-dark);
+        margin-bottom: 8px;
+        font-size: 0.875rem;
+        letter-spacing: 0.3px;
+    }
+
+    /* MODERN BUTTONS */
+    .btn-primary-custom {
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        border: none;
+        padding: 16px 40px;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        box-shadow: 0 4px 16px rgba(26,95,63,0.3);
+        position: relative;
+        overflow: hidden;
+        letter-spacing: 0.5px;
+    }
+
+    .btn-primary-custom::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, transparent 0%, rgba(255,255,255,0.2) 100%);
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .btn-primary-custom:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(26,95,63,0.4);
+    }
+
+    .btn-primary-custom:hover::before {
+        opacity: 1;
+    }
+
+    /* STATS CARDS - Bento Grid Style */
+    .stats-section {
+        background: var(--bg-light);
+        padding: 80px 0;
+        margin-top: -80px;
+        position: relative;
+        z-index: 5;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: var(--radius);
+        padding: 32px;
+        text-align: center;
+        box-shadow: var(--shadow-md);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid rgba(0,0,0,0.04);
         position: relative;
         overflow: hidden;
     }
-    
-    .hero-section::before {
+
+    .stat-card::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
-        bottom: 0;
-        background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
-        opacity: 0.1;
+        height: 4px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        transform: scaleX(0);
+        transition: transform 0.4s;
     }
 
-    .search-box {
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+    .stat-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .stat-card:hover::before {
+        transform: scaleX(1);
+    }
+
+    .stat-icon {
+        font-size: 3rem;
+        margin-bottom: 16px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin: 8px 0;
+        letter-spacing: -0.02em;
+    }
+
+    .stat-label {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+        font-weight: 500;
+    }
+
+    /* SECTION STYLING */
+    section {
+        padding: 100px 0;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 64px;
+    }
+
+    .section-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        background: rgba(26,95,63,0.1);
+        color: var(--primary);
+        border-radius: 100px;
+        font-size: 0.85rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+
+    .section-title {
+        font-size: clamp(2rem, 4vw, 3rem);
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 16px;
+        letter-spacing: -0.02em;
+    }
+
+    .section-subtitle {
+        font-size: 1.125rem;
+        color: var(--text-muted);
         max-width: 600px;
         margin: 0 auto;
     }
 
+    /* FEATURE CARDS - Modern Card Design */
     .feature-card {
-        transition: all 0.3s ease;
-        border: none;
-        border-radius: 15px;
+        background: white;
+        border-radius: var(--radius);
+        padding: 40px;
+        height: 100%;
+        border: 1px solid rgba(0,0,0,0.06);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .feature-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+        opacity: 0;
+        transition: opacity 0.4s;
     }
 
     .feature-card:hover {
-        transform: translateY(-10px);
-        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        transform: translateY(-12px);
+        box-shadow: var(--shadow-lg);
+        border-color: var(--primary);
+    }
+
+    .feature-card:hover::before {
+        opacity: 0.03;
     }
 
     .feature-icon {
         width: 80px;
         height: 80px;
-        background: linear-gradient(135deg, #2D5016, #4A90E2);
-        border-radius: 50%;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        border-radius: 20px;
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 20px;
+        margin: 0 auto 24px;
         color: white;
         font-size: 2rem;
+        box-shadow: 0 8px 24px rgba(26,95,63,0.3);
+        transition: all 0.4s;
     }
 
-    .stat-card {
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1) rotate(5deg);
+    }
+
+    .feature-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: var(--text-dark);
+        margin-bottom: 12px;
+    }
+
+    .feature-text {
+        color: var(--text-muted);
+        line-height: 1.7;
+    }
+
+    /* PRICING CARDS - Premium Design */
+    .pricing-card {
         background: white;
-        border-radius: 15px;
-        padding: 30px;
-        text-align: center;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        transition: all 0.3s ease;
+        border-radius: var(--radius-xl);
+        padding: 48px 40px;
+        height: 100%;
+        border: 2px solid #e2e8f0;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+        overflow: hidden;
     }
 
-    .stat-card:hover {
+    .pricing-card.featured {
+        border-color: var(--primary);
+        box-shadow: 0 20px 60px rgba(26,95,63,0.15);
         transform: scale(1.05);
     }
 
-    .stat-number {
-        font-size: 3rem;
-        font-weight: 700;
-        color: #2D5016;
-        margin: 10px 0;
-    }
-
-    .testimonial-card {
-        background: white;
-        border-radius: 15px;
-        padding: 30px;
-        box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-        height: 100%;
-    }
-
-    .avatar {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    .price-badge {
-        background: linear-gradient(135deg, #2D5016, #4A90E2);
-        color: white;
-        padding: 5px 15px;
-        border-radius: 20px;
-        font-weight: 600;
-        display: inline-block;
-    }
-
-    .section-title {
-        position: relative;
-        display: inline-block;
-        margin-bottom: 30px;
-    }
-
-    .section-title::after {
+    .pricing-card::after {
         content: '';
         position: absolute;
-        bottom: -10px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 60px;
-        height: 4px;
-        background: linear-gradient(90deg, #2D5016, #4A90E2);
-        border-radius: 2px;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, var(--primary), var(--accent));
+        transform: scaleX(0);
+        transition: transform 0.4s;
     }
 
-    .btn-primary-custom {
-        background: linear-gradient(135deg, #2D5016, #4A90E2);
-        border: none;
-        padding: 12px 35px;
-        font-weight: 600;
-        border-radius: 50px;
-        transition: all 0.3s ease;
+    .pricing-card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: var(--shadow-lg);
     }
 
-    .btn-primary-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 5px 20px rgba(45, 80, 22, 0.4);
+    .pricing-card:hover::after {
+        transform: scaleX(1);
     }
 
-    .image-gallery img {
-        border-radius: 15px;
-        transition: all 0.3s ease;
+    .pricing-badge {
+        display: inline-block;
+        padding: 8px 20px;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        color: white;
+        border-radius: 100px;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+        margin-bottom: 16px;
+    }
+
+    .pricing-badge.secondary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-light));
+    }
+
+    .pricing-name {
+        font-size: 1.75rem;
+        font-weight: 800;
+        color: var(--text-dark);
+        margin-bottom: 16px;
+    }
+
+    .pricing-price {
+        font-size: 3.5rem;
+        font-weight: 900;
+        background: linear-gradient(135deg, var(--primary), var(--primary-light));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        letter-spacing: -0.02em;
+    }
+
+    .pricing-unit {
+        font-size: 1rem;
+        color: var(--text-muted);
+        font-weight: 500;
+    }
+
+    .pricing-features {
+        list-style: none;
+        padding: 0;
+        margin: 32px 0;
+    }
+
+    .pricing-features li {
+        padding: 12px 0;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .pricing-features i {
+        font-size: 1.25rem;
+        color: var(--primary);
+    }
+
+    /* IMAGE GALLERY - Modern Grid */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 24px;
+    }
+
+    .gallery-item {
+        position: relative;
+        border-radius: var(--radius);
+        overflow: hidden;
+        aspect-ratio: 4/3;
         cursor: pointer;
     }
 
-    .image-gallery img:hover {
-        transform: scale(1.05);
-        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    .badge-custom {
-        background: #2D5016;
-        color: white;
-        padding: 8px 15px;
-        border-radius: 20px;
-        font-size: 0.85rem;
+    .gallery-item::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(0deg, rgba(0,0,0,0.6) 0%, transparent 50%);
+        opacity: 0;
+        transition: opacity 0.4s;
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.1);
+    }
+
+    .gallery-item:hover::after {
+        opacity: 1;
+    }
+
+    /* TESTIMONIAL CARDS */
+    .testimonial-card {
+        background: white;
+        border-radius: var(--radius-xl);
+        padding: 40px;
+        box-shadow: var(--shadow-md);
+        height: 100%;
+        border: 1px solid rgba(0,0,0,0.06);
+        transition: all 0.4s;
+    }
+
+    .testimonial-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-lg);
+    }
+
+    .testimonial-avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid var(--primary);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .testimonial-rating {
+        color: #fbbf24;
+        font-size: 1.25rem;
+        letter-spacing: 2px;
+    }
+
+    /* CTA SECTION */
+    .cta-section {
+        background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 50%, var(--primary-light) 100%);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%);
+    }
+
+    /* ACCORDION - Modern Style */
+    .accordion-item {
+        background: white;
+        border: 1px solid rgba(0,0,0,0.06);
+        border-radius: var(--radius);
+        margin-bottom: 16px;
+        overflow: hidden;
+    }
+
+    .accordion-button {
+        background: white;
+        padding: 24px;
+        font-weight: 600;
+        color: var(--text-dark);
+        border: none;
+        border-radius: var(--radius) !important;
+    }
+
+    .accordion-button:not(.collapsed) {
+        background: var(--bg-light);
+        color: var(--primary);
+        box-shadow: none;
+    }
+
+    .accordion-button:focus {
+        box-shadow: none;
+        border: none;
+    }
+
+    .accordion-body {
+        padding: 0 24px 24px;
+        color: var(--text-muted);
+        line-height: 1.7;
+    }
+
+    /* ABOUT IMAGE */
+    .about-image {
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        box-shadow: var(--shadow-lg);
+        position: relative;
+    }
+
+    .about-image::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(26,95,63,0.2), transparent);
+    }
+
+    .about-image img {
+        transition: transform 0.6s;
+    }
+
+    .about-image:hover img {
+        transform: scale(1.05);
+    }
+
+    /* INFO BOXES */
+    .info-box {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        padding: 20px;
+        background: var(--bg-light);
+        border-radius: 12px;
+        border-left: 4px solid var(--primary);
+    }
+
+    .info-box i {
+        font-size: 2rem;
+        color: var(--primary);
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+        .hero-section {
+            min-height: 90vh;
+        }
+
+        .search-box {
+            padding: 24px;
+        }
+
+        .stats-section {
+            margin-top: -40px;
+        }
+
+        section {
+            padding: 60px 0;
+        }
+
+        .pricing-card.featured {
+            transform: scale(1);
+        }
+    }
+
+    /* SMOOTH ANIMATIONS */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .animate-fade-in {
+        animation: fadeInUp 0.6s ease-out;
     }
 </style>
 {% endblock %}
@@ -161,37 +644,44 @@
 
 <!-- HERO SECTION -->
 <section class="hero-section">
-    <div class="container position-relative" style="z-index: 2;">
+    <div class="hero-bg"></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-pattern"></div>
+    
+    <div class="container hero-content">
         <div class="row">
-            <div class="col-lg-8 mx-auto text-center">
-                <span class="badge badge-custom mb-3">
-                    <i class="bi bi-mountain"></i> Platform Resmi TNGL
-                </span>
-                <h1 class="display-3 fw-bold mb-4" data-aos="fade-up">
-                    Booking Pendakian<br>Gunung Rinjani
+            <div class="col-lg-10 mx-auto text-center">
+                <div class="badge-floating animate-fade-in">
+                    <i class="bi bi-patch-check-fill"></i>
+                    <span>Platform Resmi TNGL</span>
+                </div>
+                
+                <h1 class="hero-title animate-fade-in">
+                    Taklukkan Puncak<br>Gunung Rinjani
                 </h1>
-                <p class="lead mb-4" data-aos="fade-up" data-aos-delay="100">
-                    Jalur Senaru - Pendakian aman, mudah, dan terpercaya<br>
-                    Nikmati keindahan Danau Segara Anak dari puncak tertinggi Lombok
+                
+                <p class="hero-subtitle animate-fade-in">
+                    Pengalaman mendaki yang aman, mudah, dan tak terlupakan via jalur Senaru<br>
+                    Saksikan keajaiban Danau Segara Anak dari puncak tertinggi Lombok
                 </p>
 
-                <!-- Search Box -->
-                <div class="search-box" data-aos="fade-up" data-aos-delay="200">
+                <!-- Modern Search Box -->
+                <div class="search-box animate-fade-in">
                     <form action="#" method="GET">
-                        <div class="row g-3">
+                        <div class="row g-4">
                             <div class="col-md-5">
-                                <label class="form-label text-start d-block text-dark">
-                                    <i class="bi bi-calendar-event"></i> Tanggal Pendakian
+                                <label class="form-label">
+                                    <i class="bi bi-calendar3"></i> Tanggal Pendakian
                                 </label>
-                                <input type="date" name="date" class="form-control form-control-lg" 
+                                <input type="date" name="date" class="form-control" 
                                        min="{{ current_date|date:'Y-m-d' }}" required>
                             </div>
                             <div class="col-md-4">
-                                <label class="form-label text-start d-block text-dark">
-                                    <i class="bi bi-people"></i> Jumlah Pendaki
+                                <label class="form-label">
+                                    <i class="bi bi-people-fill"></i> Jumlah Pendaki
                                 </label>
-                                <select name="participants" class="form-select form-select-lg" required>
-                                    <option value="">Pilih...</option>
+                                <select name="participants" class="form-select" required>
+                                    <option value="">Pilih jumlah...</option>
                                     <option value="1">1 Orang</option>
                                     <option value="2">2 Orang</option>
                                     <option value="3">3 Orang</option>
@@ -200,15 +690,18 @@
                                 </select>
                             </div>
                             <div class="col-md-3 d-flex align-items-end">
-                                <button type="submit" class="btn btn-primary-custom w-100 btn-lg">
-                                    <i class="bi bi-search"></i> Cek Slot
+                                <button type="submit" class="btn btn-primary-custom w-100">
+                                    <i class="bi bi-search"></i> Cek Ketersediaan
                                 </button>
                             </div>
                         </div>
+                        
+                        <div class="text-center mt-4">
+                            <small class="text-muted">
+                                <i class="bi bi-info-circle-fill"></i> Booking minimal H-7 dari tanggal keberangkatan
+                            </small>
+                        </div>
                     </form>
-                    <p class="text-muted small mt-3 mb-0">
-                        <i class="bi bi-info-circle"></i> Booking minimal H-7 dari tanggal keberangkatan
-                    </p>
                 </div>
             </div>
         </div>
@@ -216,52 +709,62 @@
 </section>
 
 <!-- STATS SECTION -->
-<section class="py-5 bg-light">
+<section class="stats-section">
     <div class="container">
         <div class="row g-4">
-            <div class="col-md-3 col-6">
+            <div class="col-lg-3 col-md-6">
                 <div class="stat-card">
-                    <i class="bi bi-people-fill text-success" style="font-size: 2.5rem;"></i>
+                    <div class="stat-icon">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
                     <div class="stat-number">{{ stats.total_climbers }}+</div>
-                    <p class="text-muted mb-0">Pendaki Sukses</p>
+                    <div class="stat-label">Pendaki Sukses</div>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-lg-3 col-md-6">
                 <div class="stat-card">
-                    <i class="bi bi-graph-up-arrow text-success" style="font-size: 2.5rem;"></i>
+                    <div class="stat-icon">
+                        <i class="bi bi-graph-up-arrow"></i>
+                    </div>
                     <div class="stat-number">{{ stats.success_rate }}%</div>
-                    <p class="text-muted mb-0">Success Rate</p>
+                    <div class="stat-label">Success Rate</div>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-lg-3 col-md-6">
                 <div class="stat-card">
-                    <i class="bi bi-person-badge text-success" style="font-size: 2.5rem;"></i>
+                    <div class="stat-icon">
+                        <i class="bi bi-person-badge-fill"></i>
+                    </div>
                     <div class="stat-number">{{ stats.guides }}+</div>
-                    <p class="text-muted mb-0">Pemandu Lokal</p>
+                    <div class="stat-label">Pemandu Lokal</div>
                 </div>
             </div>
-            <div class="col-md-3 col-6">
+            <div class="col-lg-3 col-md-6">
                 <div class="stat-card">
-                    <i class="bi bi-award-fill text-success" style="font-size: 2.5rem;"></i>
+                    <div class="stat-icon">
+                        <i class="bi bi-award-fill"></i>
+                    </div>
                     <div class="stat-number">{{ stats.years_experience }}+</div>
-                    <p class="text-muted mb-0">Tahun Berpengalaman</p>
+                    <div class="stat-label">Tahun Pengalaman</div>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- ABOUT RINJANI SENARU -->
-<section class="py-5" style="padding: 80px 0;">
+<!-- ABOUT RINJANI -->
+<section>
     <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-6 mb-4 mb-lg-0">
-                <img src="static/images/𝚊𝚒𝚛 𝚝𝚎𝚛𝚓𝚞𝚗 𝚐𝚞𝚗𝚞𝚗𝚐 𝚛𝚒𝚗𝚓𝚊𝚗𝚒.jpeg" 
-                     alt="Gunung Rinjani" class="img-fluid rounded shadow-lg">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6">
+                <div class="about-image">
+                    <img src="static/images/𝚊𝚒𝚛 𝚝𝚎𝚛𝚓𝚞𝚗 𝚐𝚞𝚗𝚞𝚗𝚐 𝚛𝚒𝚗𝚓𝚊𝚗𝚒.jpeg" 
+                         alt="Gunung Rinjani" class="img-fluid">
+                </div>
             </div>
             <div class="col-lg-6">
-                <span class="badge bg-success mb-3">Jalur Senaru</span>
-                <h2 class="display-5 fw-bold mb-4">Gunung Rinjani via Senaru</h2>
+                <span class="section-badge">Jalur Senaru</span>
+                <h2 class="section-title">Gunung Rinjani via Senaru</h2>
                 <p class="text-muted mb-4">
                     Jalur Senaru adalah rute pendakian paling populer menuju puncak Gunung Rinjani (3.726 mdpl). 
                     Dimulai dari Desa Senaru, Lombok Utara, jalur ini menawarkan pemandangan spektakuler 
@@ -269,46 +772,46 @@
                 </p>
                 
                 <div class="row g-3 mb-4">
-                    <div class="col-6">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-geo-alt-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                    <div class="col-sm-6">
+                        <div class="info-box">
+                            <i class="bi bi-geo-alt-fill"></i>
                             <div>
-                                <strong>Lokasi</strong>
-                                <p class="mb-0 text-muted small">Senaru, Lombok Utara</p>
+                                <strong class="d-block">Lokasi</strong>
+                                <small class="text-muted">Senaru, Lombok Utara</small>
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-clock-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                    <div class="col-sm-6">
+                        <div class="info-box">
+                            <i class="bi bi-clock-fill"></i>
                             <div>
-                                <strong>Durasi</strong>
-                                <p class="mb-0 text-muted small">2-3 Hari</p>
+                                <strong class="d-block">Durasi</strong>
+                                <small class="text-muted">2-3 Hari Perjalanan</small>
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-speedometer text-success me-2" style="font-size: 1.5rem;"></i>
+                    <div class="col-sm-6">
+                        <div class="info-box">
+                            <i class="bi bi-speedometer"></i>
                             <div>
-                                <strong>Tingkat</strong>
-                                <p class="mb-0 text-muted small">Menengah - Sulit</p>
+                                <strong class="d-block">Tingkat</strong>
+                                <small class="text-muted">Menengah - Sulit</small>
                             </div>
                         </div>
                     </div>
-                    <div class="col-6">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-arrow-up-circle-fill text-success me-2" style="font-size: 1.5rem;"></i>
+                    <div class="col-sm-6">
+                        <div class="info-box">
+                            <i class="bi bi-arrow-up-circle-fill"></i>
                             <div>
-                                <strong>Ketinggian</strong>
-                                <p class="mb-0 text-muted small">3.726 mdpl</p>
+                                <strong class="d-block">Ketinggian</strong>
+                                <small class="text-muted">3.726 mdpl</small>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <a href="#" class="btn btn-primary-custom btn-lg">
-                    <i class="bi bi-info-circle"></i> Info Lengkap Jalur Senaru
+                <a href="#" class="btn btn-primary-custom">
+                    <i class="bi bi-info-circle-fill"></i> Info Lengkap Jalur Senaru
                 </a>
             </div>
         </div>
@@ -316,307 +819,291 @@
 </section>
 
 <!-- FEATURES SECTION -->
-<section class="py-5 bg-light" style="padding: 80px 0;">
+<section style="background: var(--bg-light);">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title">Kenapa Pilih Summit Book?</h2>
-            <p class="text-muted">Platform booking terpercaya untuk pendakian Rinjani</p>
+        <div class="section-header">
+            <span class="section-badge">Keunggulan Kami</span>
+            <h2 class="section-title">Kenapa Pilih Summit Book?</h2>
+            <p class="section-subtitle">Platform booking terpercaya dengan layanan terbaik untuk pendakian Rinjani Anda</p>
         </div>
 
         <div class="row g-4">
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="feature-icon">
-                            <i class="bi bi-shield-check"></i>
-                        </div>
-                        <h4 class="mb-3">Resmi & Aman</h4>
-                        <p class="text-muted">
-                            Terdaftar resmi di TNGL (Taman Nasional Gunung Rinjani) dengan izin lengkap. 
-                            Sistem booking aman dengan pembayaran terverifikasi.
-                        </p>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-shield-check"></i>
                     </div>
+                    <h4 class="feature-title">Resmi & Aman</h4>
+                    <p class="feature-text">
+                        Terdaftar resmi di TNGL dengan izin lengkap. 
+                        Sistem booking aman dengan pembayaran terverifikasi dan jaminan keamanan data.
+                    </p>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="feature-icon">
-                            <i class="bi bi-calendar-check"></i>
-                        </div>
-                        <h4 class="mb-3">Booking Mudah</h4>
-                        <p class="text-muted">
-                            Cek slot tersedia secara real-time, pilih tanggal, bayar online, dan terima 
-                            konfirmasi instant. Semua bisa dilakukan dalam 5 menit!
-                        </p>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-calendar-check-fill"></i>
                     </div>
+                    <h4 class="feature-title">Booking Instan</h4>
+                    <p class="feature-text">
+                        Cek slot real-time, pilih tanggal, bayar online, dan terima 
+                        konfirmasi instant. Proses booking hanya 5 menit!
+                    </p>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="feature-icon">
-                            <i class="bi bi-people"></i>
-                        </div>
-                        <h4 class="mb-3">Pemandu Lokal</h4>
-                        <p class="text-muted">
-                            Didampingi pemandu lokal Senaru berpengalaman dan bersertifikat. 
-                            Keselamatan dan kenyamanan Anda adalah prioritas kami.
-                        </p>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-people-fill"></i>
                     </div>
+                    <h4 class="feature-title">Pemandu Lokal</h4>
+                    <p class="feature-text">
+                        Didampingi pemandu lokal Senaru berpengalaman dan bersertifikat. 
+                        Keselamatan dan kenyamanan adalah prioritas utama kami.
+                    </p>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="feature-icon">
-                            <i class="bi bi-wallet2"></i>
-                        </div>
-                        <h4 class="mb-3">Harga Transparan</h4>
-                        <p class="text-muted">
-                            Tidak ada biaya tersembunyi. Semua sudah include: pemandu, porter, 
-                            tenda, makanan 3x sehari, dan perlengkapan pendakian.
-                        </p>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-wallet2"></i>
                     </div>
+                    <h4 class="feature-title">Harga Transparan</h4>
+                    <p class="feature-text">
+                        Tanpa biaya tersembunyi. Semua sudah termasuk: pemandu, porter, 
+                        tenda, makanan 3x sehari, dan perlengkapan lengkap.
+                    </p>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="feature-icon">
-                            <i class="bi bi-qr-code"></i>
-                        </div>
-                        <h4 class="mb-3">Check-in Digital</h4>
-                        <p class="text-muted">
-                            Sistem check-in modern dengan QR code. Upload KTP sekali, 
-                            scan saat tiba di basecamp. Cepat dan paperless!
-                        </p>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-qr-code-scan"></i>
                     </div>
+                    <h4 class="feature-title">Check-in Digital</h4>
+                    <p class="feature-text">
+                        Sistem check-in modern dengan QR code. Upload KTP sekali, 
+                        scan saat tiba di basecamp. Cepat, mudah, dan paperless!
+                    </p>
                 </div>
             </div>
 
-            <div class="col-md-4">
-                <div class="card feature-card h-100 shadow-sm">
-                    <div class="card-body text-center p-4">
-                        <div class="feature-icon">
-                            <i class="bi bi-headset"></i>
-                        </div>
-                        <h4 class="mb-3">Support 24/7</h4>
-                        <p class="text-muted">
-                            Tim customer service kami siap membantu via WhatsApp, email, 
-                            atau telepon. Ada kendala? Kami ada untuk Anda.
-                        </p>
+            <div class="col-lg-4 col-md-6">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="bi bi-headset"></i>
                     </div>
+                    <h4 class="feature-title">Support 24/7</h4>
+                    <p class="feature-text">
+                        Tim customer service siap membantu via WhatsApp, email, 
+                        atau telepon kapan saja. Kami ada untuk Anda!
+                    </p>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<!-- PACKAGE PRICING -->
-<section class="py-5" style="padding: 80px 0;">
+<!-- PRICING PACKAGES -->
+<section>
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title">Paket Pendakian Senaru</h2>
-            <p class="text-muted">Pilih paket sesuai kebutuhan Anda</p>
+        <div class="section-header">
+            <span class="section-badge">Pilihan Paket</span>
+            <h2 class="section-title">Paket Pendakian Senaru</h2>
+            <p class="section-subtitle">Pilih paket yang sesuai dengan kebutuhan dan durasi pendakian Anda</p>
         </div>
 
-        <div class="row g-4">
-            <!-- 2 Hari 1 Malam -->
+        <div class="row g-4 align-items-center">
+            <!-- 2D1N Package -->
             <div class="col-lg-4">
-                <div class="card h-100 shadow-lg border-0">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-4">
-                            <span class="badge bg-secondary mb-2">Paket Hemat</span>
-                            <h3 class="fw-bold">2 Hari 1 Malam</h3>
-                            <div class="my-3">
-                                <span class="display-4 fw-bold text-success">Rp 1,2</span>
-                                <span class="text-muted">juta/orang</span>
-                            </div>
-                        </div>
-
-                        <ul class="list-unstyled mb-4">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pos 1 - Danau Segara Anak</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pemandu lokal Senaru</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Porter & tenda</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Makan 3x</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Perlengkapan camping</li>
-                            <li class="mb-2 text-muted"><i class="bi bi-x-circle me-2"></i>Summit attack</li>
-                        </ul>
-
-                        <button class="btn btn-outline-success w-100 btn-lg">Pilih Paket</button>
+                <div class="pricing-card">
+                    <span class="pricing-badge secondary">Paket Hemat</span>
+                    <h3 class="pricing-name">2 Hari 1 Malam</h3>
+                    <div class="mb-4">
+                        <span class="pricing-price">1,2</span>
+                        <span class="pricing-unit">juta/orang</span>
                     </div>
+
+                    <ul class="pricing-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Pos 1 - Danau Segara Anak</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Pemandu lokal Senaru</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Porter & tenda</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Makan 3x sehari</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Perlengkapan camping</li>
+                        <li class="text-muted"><i class="bi bi-x-circle"></i> Summit attack</li>
+                    </ul>
+
+                    <button class="btn btn-outline-success w-100 btn-lg">
+                        Pilih Paket Ini
+                    </button>
                 </div>
             </div>
 
-            <!-- 3 Hari 2 Malam (POPULAR) -->
+            <!-- 3D2N Package - FEATURED -->
             <div class="col-lg-4">
-                <div class="card h-100 shadow-lg border-success" style="border-width: 3px !important;">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-4">
-                            <span class="badge badge-custom mb-2">
-                                <i class="bi bi-star-fill"></i> Paling Populer
-                            </span>
-                            <h3 class="fw-bold">3 Hari 2 Malam</h3>
-                            <div class="my-3">
-                                <span class="display-4 fw-bold text-success">Rp 1,8</span>
-                                <span class="text-muted">juta/orang</span>
-                            </div>
-                        </div>
-
-                        <ul class="list-unstyled mb-4">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pos 1 - Puncak - Danau</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pemandu berpengalaman</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Porter & tenda premium</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Makan 5x</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Perlengkapan lengkap</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Summit attack 3.726 mdpl</strong></li>
-                        </ul>
-
-                        <button class="btn btn-primary-custom w-100 btn-lg">Pilih Paket</button>
+                <div class="pricing-card featured">
+                    <span class="pricing-badge">
+                        <i class="bi bi-star-fill"></i> Paling Populer
+                    </span>
+                    <h3 class="pricing-name">3 Hari 2 Malam</h3>
+                    <div class="mb-4">
+                        <span class="pricing-price">1,8</span>
+                        <span class="pricing-unit">juta/orang</span>
                     </div>
+
+                    <ul class="pricing-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Pos 1 - Puncak - Danau</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Pemandu berpengalaman</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Porter & tenda premium</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Makan 5x sehari</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Perlengkapan lengkap</li>
+                        <li><strong><i class="bi bi-check-circle-fill"></i> Summit attack 3.726 mdpl</strong></li>
+                    </ul>
+
+                    <button class="btn btn-primary-custom w-100 btn-lg">
+                        Pilih Paket Ini
+                    </button>
                 </div>
             </div>
 
-            <!-- 4 Hari 3 Malam -->
+            <!-- 4D3N Package -->
             <div class="col-lg-4">
-                <div class="card h-100 shadow-lg border-0">
-                    <div class="card-body p-4">
-                        <div class="text-center mb-4">
-                            <span class="badge bg-warning text-dark mb-2">Paket Premium</span>
-                            <h3 class="fw-bold">4 Hari 3 Malam</h3>
-                            <div class="my-3">
-                                <span class="display-4 fw-bold text-success">Rp 2,5</span>
-                                <span class="text-muted">juta/orang</span>
-                            </div>
-                        </div>
-
-                        <ul class="list-unstyled mb-4">
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Full explore Senaru</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Pemandu + fotografer</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Porter premium</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Makan 7x (menu premium)</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i>Perlengkapan pro</li>
-                            <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i><strong>Summit + Hot spring</strong></li>
-                        </ul>
-
-                        <button class="btn btn-outline-success w-100 btn-lg">Pilih Paket</button>
+                <div class="pricing-card">
+                    <span class="pricing-badge secondary">Paket Premium</span>
+                    <h3 class="pricing-name">4 Hari 3 Malam</h3>
+                    <div class="mb-4">
+                        <span class="pricing-price">2,5</span>
+                        <span class="pricing-unit">juta/orang</span>
                     </div>
+
+                    <ul class="pricing-features">
+                        <li><i class="bi bi-check-circle-fill"></i> Full explore Senaru</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Pemandu + fotografer</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Porter premium</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Makan 7x (menu premium)</li>
+                        <li><i class="bi bi-check-circle-fill"></i> Perlengkapan profesional</li>
+                        <li><strong><i class="bi bi-check-circle-fill"></i> Summit + Hot spring</strong></li>
+                    </ul>
+
+                    <button class="btn btn-outline-success w-100 btn-lg">
+                        Pilih Paket Ini
+                    </button>
                 </div>
             </div>
         </div>
 
-        <div class="text-center mt-4">
+        <div class="text-center mt-5">
             <p class="text-muted">
-                <i class="bi bi-info-circle"></i> Harga per orang, minimal 2 orang pendaki. 
-                <a href="#" class="text-success">Lihat detail harga →</a>
+                <i class="bi bi-info-circle-fill"></i> Harga per orang, minimal 2 orang pendaki. 
+                <a href="#" class="text-success fw-bold">Lihat detail lengkap →</a>
             </p>
         </div>
     </div>
 </section>
 
 <!-- GALLERY -->
-<section class="py-5 bg-dark text-white" style="padding: 80px 0;">
+<section class="bg-dark text-white">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold">Galeri Rinjani Senaru</h2>
-            <p class="text-muted">Keindahan yang menanti Anda di puncak</p>
+        <div class="section-header">
+            <span class="section-badge" style="background: rgba(255,255,255,0.15); color: white;">Galeri Foto</span>
+            <h2 class="section-title text-white">Keindahan Rinjani Senaru</h2>
+            <p class="section-subtitle text-white-50">Keindahan yang menanti Anda di puncak</p>
         </div>
 
-        <div class="row g-3 image-gallery">
-            <div class="col-md-4">
+        <div class="gallery-grid">
+            <div class="gallery-item">
                 <img src="static/images/Mount Rinjani awesome viewes via Torean route.jpeg" 
-                     alt="Puncak Rinjani" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+                     alt="Puncak Rinjani">
             </div>
-            <div class="col-md-4">
+            <div class="gallery-item">
                 <img src="static/images/Rinjani mountain.jpeg" 
-                     alt="Sunrise Rinjani" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+                     alt="Sunrise Rinjani">
             </div>
-            <div class="col-md-4">
+            <div class="gallery-item">
                 <img src="static/images/Danau Segara Anak, Nusa Tenggara Barat.jpeg" 
-                     alt="Danau Segara Anak" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+                     alt="Danau Segara Anak">
             </div>
-            <div class="col-md-6">
+            <div class="gallery-item">
                 <img src="static/images/Explore Rinjani Mountain_ Trekking Information & Lombok Volcano Adventure.jpeg" 
-                     alt="Camp Site" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+                     alt="Camp Site">
             </div>
-            <div class="col-md-6">
+            <div class="gallery-item">
                 <img src="static/images/Rinjani in panorama.jpeg" 
-                     alt="Trail Senaru" class="img-fluid w-100" style="height: 300px; object-fit: cover;">
+                     alt="Trail Senaru">
+            </div>
+            <div class="gallery-item">
+                <img src="static/images/𝚊𝚒𝚛 𝚝𝚎𝚛𝚓𝚞𝚗 𝚐𝚞𝚗𝚞𝚗𝚐 𝚛𝚒𝚗𝚓𝚊𝚗𝚒.jpeg" 
+                     alt="Waterfall">
             </div>
         </div>
     </div>
 </section>
 
 <!-- TESTIMONIALS -->
-<section class="py-5" style="padding: 80px 0;">
+<section style="background: var(--bg-light);">
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title">Kata Mereka</h2>
-            <p class="text-muted">Pengalaman pendaki yang telah menaklukkan Rinjani</p>
+        <div class="section-header">
+            <span class="section-badge">Testimoni</span>
+            <h2 class="section-title">Kata Mereka</h2>
+            <p class="section-subtitle">Pengalaman nyata dari pendaki yang telah menaklukkan Rinjani</p>
         </div>
 
         <div class="row g-4">
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 <div class="testimonial-card">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="https://i.pravatar.cc/60?img=1" alt="User" class="avatar me-3">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="https://i.pravatar.cc/64?img=1" alt="Budi" class="testimonial-avatar me-3">
                         <div>
-                            <h6 class="mb-0 fw-bold">Budi Santoso</h6>
+                            <h6 class="mb-1 fw-bold">Budi Santoso</h6>
                             <small class="text-muted">Jakarta, Indonesia</small>
-                            <div class="text-warning">
-                                ★★★★★
-                            </div>
+                            <div class="testimonial-rating">★★★★★</div>
                         </div>
                     </div>
-                    <p class="text-muted mb-0">
-                        "Pengalaman luar biasa! Booking mudah, pemandu ramah dan profesional. 
+                    <p class="text-muted">
+                        Pengalaman luar biasa! Booking mudah, pemandu ramah dan profesional. 
                         Pemandangan dari puncak Rinjani via Senaru benar-benar worth it. 
-                        Highly recommended untuk first timer!"
+                        Highly recommended untuk first timer!
                     </p>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 <div class="testimonial-card">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="https://i.pravatar.cc/60?img=5" alt="User" class="avatar me-3">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="https://i.pravatar.cc/64?img=5" alt="Siti" class="testimonial-avatar me-3">
                         <div>
-                            <h6 class="mb-0 fw-bold">Siti Nurhaliza</h6>
+                            <h6 class="mb-1 fw-bold">Siti Nurhaliza</h6>
                             <small class="text-muted">Bandung, Indonesia</small>
-                            <div class="text-warning">
-                                ★★★★★
-                            </div>
+                            <div class="testimonial-rating">★★★★★</div>
                         </div>
                     </div>
-                    <p class="text-muted mb-0">
-                        "Sistem check-in dengan QR code sangat memudahkan. Tidak perlu antri lama. 
+                    <p class="text-muted">
+                        Sistem check-in dengan QR code sangat memudahkan. Tidak perlu antri lama. 
                         Peralatan camping yang disediakan juga bagus dan bersih. 
-                        Team Summit Book sangat membantu dari awal sampai akhir!"
+                        Team Summit Book sangat membantu dari awal sampai akhir!
                     </p>
                 </div>
             </div>
 
-            <div class="col-md-4">
+            <div class="col-lg-4">
                 <div class="testimonial-card">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="https://i.pravatar.cc/60?img=8" alt="User" class="avatar me-3">
+                    <div class="d-flex align-items-center mb-4">
+                        <img src="https://i.pravatar.cc/64?img=8" alt="Ahmad" class="testimonial-avatar me-3">
                         <div>
-                            <h6 class="mb-0 fw-bold">Ahmad Yani</h6>
+                            <h6 class="mb-1 fw-bold">Ahmad Yani</h6>
                             <small class="text-muted">Surabaya, Indonesia</small>
-                            <div class="text-warning">
-                                ★★★★★
-                            </div>
+                            <div class="testimonial-rating">★★★★★</div>
                         </div>
                     </div>
-                    <p class="text-muted mb-0">
-                        "Paket 3D2N via jalur Senaru sangat worth it! 
+                    <p class="text-muted">
+                        Paket 3D2N via jalur Senaru sangat worth it! 
                         Sunrise dari puncak spektakuler, Danau Segara Anak indah banget. 
-                        Porter dan guide sangat helpful. Terima kasih Summit Book!"
+                        Porter dan guide sangat helpful. Terima kasih Summit Book!
                     </p>
                 </div>
             </div>
@@ -625,42 +1112,48 @@
 </section>
 
 <!-- CTA SECTION -->
-<section class="py-5 text-white" style="background: linear-gradient(135deg, #2D5016, #4A90E2); padding: 80px 0;">
-    <div class="container text-center">
-        <h2 class="display-4 fw-bold mb-4">Siap Mendaki Rinjani?</h2>
-        <p class="lead mb-4">
+<section class="cta-section">
+    <div class="container text-center position-relative" style="z-index: 10;">
+        <span class="badge-floating mb-4" style="background: rgba(255,255,255,0.2);">
+            <i class="bi bi-gift-fill"></i>
+            <span>Promo Spesial</span>
+        </span>
+        <h2 class="display-4 fw-bold text-white mb-4">Siap Mendaki Rinjani?</h2>
+        <p class="lead text-white-50 mb-5">
             Booking sekarang dan dapatkan early bird discount 10% untuk bulan depan!
         </p>
-        <div class="d-flex gap-3 justify-content-center flex-wrap">
+        
+        <div class="d-flex gap-3 justify-content-center flex-wrap mb-4">
             <a href="#" class="btn btn-light btn-lg px-5">
-                <i class="bi bi-calendar-check"></i> Booking Sekarang
+                <i class="bi bi-calendar-check-fill"></i> Booking Sekarang
             </a>
             <a href="#" class="btn btn-outline-light btn-lg px-5">
                 <i class="bi bi-whatsapp"></i> Hubungi Kami
             </a>
         </div>
-        <p class="mt-4 mb-0">
+        
+        <p class="text-white-50 mb-0">
             <i class="bi bi-shield-check"></i> Pembayaran aman & terpercaya
         </p>
     </div>
 </section>
 
 <!-- FAQ SECTION -->
-<section class="py-5 bg-light" style="padding: 80px 0;">
+<section>
     <div class="container">
-        <div class="text-center mb-5">
-            <h2 class="display-5 fw-bold section-title">FAQ</h2>
-            <p class="text-muted">Pertanyaan yang sering diajukan</p>
+        <div class="section-header">
+            <span class="section-badge">Bantuan</span>
+            <h2 class="section-title">Frequently Asked Questions</h2>
+            <p class="section-subtitle">Pertanyaan yang sering diajukan seputar pendakian Rinjani</p>
         </div>
 
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 <div class="accordion" id="faqAccordion">
-                    <!-- FAQ 1 -->
-                    <div class="accordion-item border-0 shadow-sm mb-3">
+                    <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                <i class="bi bi-question-circle-fill me-3 text-success"></i>
                                 Apa saja yang sudah include dalam paket?
                             </button>
                         </h2>
@@ -673,11 +1166,10 @@
                         </div>
                     </div>
 
-                    <!-- FAQ 2 -->
-                    <div class="accordion-item border-0 shadow-sm mb-3">
+                    <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
-                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                <i class="bi bi-question-circle-fill me-3 text-success"></i>
                                 Berapa lama perjalanan dari Jakarta/Bali ke Senaru?
                             </button>
                         </h2>
@@ -690,11 +1182,10 @@
                         </div>
                     </div>
 
-                    <!-- FAQ 3 -->
-                    <div class="accordion-item border-0 shadow-sm mb-3">
+                    <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                <i class="bi bi-question-circle-fill me-3 text-success"></i>
                                 Kapan waktu terbaik mendaki Rinjani via Senaru?
                             </button>
                         </h2>
@@ -707,11 +1198,10 @@
                         </div>
                     </div>
 
-                    <!-- FAQ 4 -->
-                    <div class="accordion-item border-0 shadow-sm mb-3">
+                    <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
-                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                <i class="bi bi-question-circle-fill me-3 text-success"></i>
                                 Apakah pemula bisa mendaki Rinjani?
                             </button>
                         </h2>
@@ -724,11 +1214,10 @@
                         </div>
                     </div>
 
-                    <!-- FAQ 5 -->
-                    <div class="accordion-item border-0 shadow-sm mb-3">
+                    <div class="accordion-item">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
-                                <i class="bi bi-question-circle me-2 text-success"></i>
+                                <i class="bi bi-question-circle-fill me-3 text-success"></i>
                                 Bagaimana cara pembayaran dan refund policy?
                             </button>
                         </h2>
@@ -755,10 +1244,39 @@
         const dateInput = document.querySelector('input[type="date"]');
         if(dateInput) {
             const today = new Date();
-            today.setDate(today.getDate() + 7); // Minimal H-7
+            today.setDate(today.getDate() + 7);
             const minDate = today.toISOString().split('T')[0];
             dateInput.min = minDate;
         }
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if(target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.feature-card, .pricing-card, .testimonial-card, .stat-card').forEach(el => {
+            observer.observe(el);
+        });
     });
 </script>
 {% endblock %}
