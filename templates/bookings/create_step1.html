@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Buat Booking - Step 1{% endblock %}
+
+{% block extra_css %}
+<style>
+    .booking-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    
+    .booking-steps::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #e0e0e0;
+        z-index: 0;
+    }
+    
+    .step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .step-circle {
+        width: 50px;
+        height: 50px;
+        background: #e0e0e0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-weight: bold;
+        color: #999;
+    }
+    
+    .step.active .step-circle {
+        background: #2D5016;
+        color: white;
+    }
+    
+    .step.completed .step-circle {
+        background: #28a745;
+        color: white;
+    }
+    
+    .route-card {
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+    
+    .route-card:hover {
+        border-color: #2D5016;
+        transform: translateY(-5px);
+    }
+    
+    .route-card.selected {
+        border-color: #2D5016;
+        background-color: #f0f7f0;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Booking Steps -->
+    <div class="booking-steps">
+        <div class="step active">
+            <div class="step-circle">1</div>
+            <p class="mb-0">Pilih Jadwal</p>
+        </div>
+        <div class="step">
+            <div class="step-circle">2</div>
+            <p class="mb-0">Data Peserta</p>
+        </div>
+        <div class="step">
+            <div class="step-circle">3</div>
+            <p class="mb-0">Pembayaran</p>
+        </div>
+        <div class="step">
+            <div class="step-circle">4</div>
+            <p class="mb-0">Konfirmasi</p>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="fw-bold mb-4">
+                        <i class="bi bi-calendar-check text-success me-2"></i>
+                        Buat Booking Baru
+                    </h3>
+                    
+                    <form method="POST">
+                        {% csrf_token %}
+                        
+                        <!-- Route Selection -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="bi bi-geo-alt me-1"></i> Pilih Jalur Pendakian <span class="text-danger">*</span>
+                            </label>
+                            
+                            {% if routes %}
+                            <div class="row g-3">
+                                {% for route in routes %}
+                                <div class="col-md-6">
+                                    <div class="card route-card h-100" onclick="selectRoute({{ route.id }})">
+                                        <div class="card-body">
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="route" 
+                                                       id="route{{ route.id }}" value="{{ route.id }}"
+                                                       {% if form.route.value == route.id|stringformat:"s" %}checked{% endif %}
+                                                       required>
+                                                <label class="form-check-label w-100" for="route{{ route.id }}">
+                                                    <h5 class="mb-2">{{ route.mountain.name }}</h5>
+                                                    <p class="mb-2"><strong>{{ route.name }}</strong></p>
+                                                    <p class="text-muted small mb-2">
+                                                        <i class="bi bi-clock me-1"></i> {{ route.get_duration_text }}
+                                                    </p>
+                                                    <p class="text-success fw-bold mb-0">
+                                                        Rp {{ route.price_per_person|floatformat:0 }}/orang
+                                                    </p>
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                {% endfor %}
+                            </div>
+                            {% else %}
+                            <div class="alert alert-warning">
+                                Belum ada jalur pendakian tersedia. Silakan hubungi admin.
+                            </div>
+                            {% endif %}
+                            
+                            {% if form.route.errors %}
+                            <div class="text-danger small mt-2">{{ form.route.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Date Selection -->
+                        <div class="mb-4">
+                            <label for="{{ form.start_date.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-calendar-event me-1"></i> Tanggal Mulai Pendakian <span class="text-danger">*</span>
+                            </label>
+                            {{ form.start_date }}
+                            <small class="text-muted d-block mt-1">
+                                <i class="bi bi-info-circle"></i> Booking minimal H-7 dari tanggal keberangkatan
+                            </small>
+                            {% if form.start_date.errors %}
+                            <div class="text-danger small mt-2">{{ form.start_date.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Number of Participants -->
+                        <div class="mb-4">
+                            <label for="{{ form.num_participants.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-people me-1"></i> Jumlah Peserta <span class="text-danger">*</span>
+                            </label>
+                            {{ form.num_participants }}
+                            <small class="text-muted d-block mt-1">
+                                Minimal 1 orang, maksimal 10 orang per booking
+                            </small>
+                            {% if form.num_participants.errors %}
+                            <div class="text-danger small mt-2">{{ form.num_participants.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Notes -->
+                        <div class="mb-4">
+                            <label for="{{ form.notes.id_for_label }}" class="form-label fw-semibold">
+                                <i class="bi bi-chat-left-text me-1"></i> Catatan Tambahan (Opsional)
+                            </label>
+                            {{ form.notes }}
+                            {% if form.notes.errors %}
+                            <div class="text-danger small mt-2">{{ form.notes.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Alert Info -->
+                        <div class="alert alert-info">
+                            <h6 class="alert-heading"><i class="bi bi-info-circle me-2"></i>Informasi Penting</h6>
+                            <ul class="mb-0 small">
+                                <li>Booking minimal H-7 dari tanggal keberangkatan</li>
+                                <li>Setiap peserta harus berusia minimal 17 tahun</li>
+                                <li>Pembayaran harus dilunasi maksimal H-3</li>
+                                <li>Check-in dibuka H-1 sampai hari-H</li>
+                            </ul>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'core:home' %}" class="btn btn-outline-secondary">
+                                <i class="bi bi-arrow-left me-2"></i>Batal
+                            </a>
+                            <button type="submit" class="btn btn-success flex-grow-1">
+                                Lanjut ke Data Peserta <i class="bi bi-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function selectRoute(routeId) {
+        // Remove all selected classes
+        document.querySelectorAll('.route-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        
+        // Add selected class to clicked card
+        event.currentTarget.classList.add('selected');
+        
+        // Check the radio button
+        document.getElementById('route' + routeId).checked = true;
+    }
+    
+    // Set min date (H-7)
+    const dateInput = document.querySelector('input[type="date"]');
+    if (dateInput) {
+        const today = new Date();
+        today.setDate(today.getDate() + 7);
+        const minDate = today.toISOString().split('T')[0];
+        dateInput.min = minDate;
+    }
+</script>
+{% endblock %}

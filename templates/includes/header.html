@@ -36,10 +36,10 @@
                 
                 <!-- Booking -->
                 <li class="nav-item">
-                    <a class="nav-link {% if 'bookings' in request.path %}active{% endif %}" href="#">
-                        <i class="bi bi-calendar-check"></i> Booking
-                    </a>
-                </li>
+    <a class="nav-link {% if 'bookings' in request.path %}active{% endif %}" href="{% url 'bookings:create' %}">
+        <i class="bi bi-calendar-check"></i> Booking
+    </a>
+</li>
 
                 <!-- Kontak -->
                 <li class="nav-item">
@@ -71,12 +71,12 @@
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{% url 'bookings:list' %}">
                                     <i class="bi bi-calendar-event me-2"></i> Booking Saya
                                 </a>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">
+                                <a class="dropdown-item" href="{% url 'accounts:profile' %}">
                                     <i class="bi bi-person me-2"></i> Profil
                                 </a>
                             </li>
