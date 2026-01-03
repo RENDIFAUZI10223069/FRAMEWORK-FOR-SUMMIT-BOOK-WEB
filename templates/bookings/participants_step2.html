@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Data Peserta - Step 2{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Booking Steps -->
+    <div class="booking-steps">
+        <div class="step completed">
+            <div class="step-circle"><i class="bi bi-check"></i></div>
+            <p class="mb-0">Pilih Jadwal</p>
+        </div>
+        <div class="step active">
+            <div class="step-circle">2</div>
+            <p class="mb-0">Data Peserta</p>
+        </div>
+        <div class="step">
+            <div class="step-circle">3</div>
+            <p class="mb-0">Pembayaran</p>
+        </div>
+        <div class="step">
+            <div class="step-circle">4</div>
+            <p class="mb-0">Konfirmasi</p>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Booking Info -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <small class="text-muted">Kode Booking</small>
+                            <p class="fw-bold mb-0">{{ booking.booking_code }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted">Jalur</small>
+                            <p class="fw-bold mb-0">{{ booking.route.name }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted">Tanggal</small>
+                            <p class="fw-bold mb-0">{{ booking.start_date|date:"d M Y" }}</p>
+                        </div>
+                        <div class="col-md-3">
+                            <small class="text-muted">Jumlah Peserta</small>
+                            <p class="fw-bold mb-0">{{ booking.num_participants }} orang</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-8">
+                    <!-- Form Peserta -->
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <h4 class="fw-bold mb-3">
+                                <i class="bi bi-person-badge text-success me-2"></i>
+                                Data Peserta {{ current_count }} dari {{ total_count }}
+                            </h4>
+                            
+                            <form method="POST">
+                                {% csrf_token %}
+                                
+                                <!-- Data Diri -->
+                                <h6 class="fw-bold mb-3 mt-4">Data Diri</h6>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
+                                        {{ form.full_name }}
+                                        {% if form.full_name.errors %}
+                                        <div class="text-danger small">{{ form.full_name.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">NIK/No. Identitas <span class="text-danger">*</span></label>
+                                        {{ form.id_number }}
+                                        {% if form.id_number.errors %}
+                                        <div class="text-danger small">{{ form.id_number.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Tanggal Lahir <span class="text-danger">*</span></label>
+                                        {{ form.date_of_birth }}
+                                        {% if form.date_of_birth.errors %}
+                                        <div class="text-danger small">{{ form.date_of_birth.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Jenis Kelamin <span class="text-danger">*</span></label>
+                                        {{ form.gender }}
+                                        {% if form.gender.errors %}
+                                        <div class="text-danger small">{{ form.gender.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Golongan Darah <span class="text-danger">*</span></label>
+                                        {{ form.blood_type }}
+                                        {% if form.blood_type.errors %}
+                                        <div class="text-danger small">{{ form.blood_type.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Telepon <span class="text-danger">*</span></label>
+                                        {{ form.phone_number }}
+                                        {% if form.phone_number.errors %}
+                                        <div class="text-danger small">{{ form.phone_number.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Email <span class="text-danger">*</span></label>
+                                        {{ form.email }}
+                                        {% if form.email.errors %}
+                                        <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <!-- Kontak Darurat -->
+                                <h6 class="fw-bold mb-3 mt-4">Kontak Darurat</h6>
+                                <div class="alert alert-warning small">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    Wajib diisi untuk keperluan keselamatan selama pendakian
+                                </div>
+                                
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Nama Kontak Darurat <span class="text-danger">*</span></label>
+                                        {{ form.emergency_contact_name }}
+                                        {% if form.emergency_contact_name.errors %}
+                                        <div class="text-danger small">{{ form.emergency_contact_name.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Telepon Kontak Darurat <span class="text-danger">*</span></label>
+                                        {{ form.emergency_contact_phone }}
+                                        {% if form.emergency_contact_phone.errors %}
+                                        <div class="text-danger small">{{ form.emergency_contact_phone.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label">Hubungan <span class="text-danger">*</span></label>
+                                    {{ form.emergency_contact_relation }}
+                                    {% if form.emergency_contact_relation.errors %}
+                                    <div class="text-danger small">{{ form.emergency_contact_relation.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <!-- Health Notes -->
+                                <div class="mb-4">
+                                    <label class="form-label">Catatan Kesehatan (Opsional)</label>
+                                    {{ form.health_notes }}
+                                    <small class="text-muted d-block">Riwayat penyakit, alergi, atau kondisi khusus lainnya</small>
+                                    {% if form.health_notes.errors %}
+                                    <div class="text-danger small">{{ form.health_notes.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+                                
+                                <button type="submit" class="btn btn-success w-100 btn-lg">
+                                    {% if current_count < total_count %}
+                                        Simpan & Lanjut Peserta Berikutnya <i class="bi bi-arrow-right ms-2"></i>
+                                    {% else %}
+                                        Simpan & Lanjut ke Pembayaran <i class="bi bi-arrow-right ms-2"></i>
+                                    {% endif %}
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Sidebar Progress -->
+                <div class="col-lg-4">
+                    <div class="card shadow-sm sticky-top" style="top: 20px;">
+                        <div class="card-body">
+                            <h6 class="fw-bold mb-3">Progress Pengisian</h6>
+                            <div class="progress mb-3" style="height: 25px;">
+                                <div class="progress-bar bg-success" style="width: {{ current_count|add:'-1' }}0%">
+                                    {{ current_count|add:'-1' }}/{{ total_count }}
+                                </div>
+                            </div>
+                            
+                            <h6 class="fw-bold mb-3 mt-4">Peserta Terdaftar</h6>
+                            {% if existing_participants %}
+                            <ul class="list-group list-group-flush">
+                                {% for p in existing_participants %}
+                                <li class="list-group-item px-0">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    {{ p.full_name }}
+                                </li>
+                                {% endfor %}
+                            </ul>
+                            {% else %}
+                            <p class="text-muted small">Belum ada peserta terdaftar</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .booking-steps {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 40px;
+        position: relative;
+    }
+    
+    .booking-steps::before {
+        content: '';
+        position: absolute;
+        top: 25px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: #e0e0e0;
+        z-index: 0;
+    }
+    
+    .step {
+        flex: 1;
+        text-align: center;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .step-circle {
+        width: 50px;
+        height: 50px;
+        background: #e0e0e0;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 10px;
+        font-weight: bold;
+        color: #999;
+    }
+    
+    .step.active .step-circle {
+        background: #2D5016;
+        color: white;
+    }
+    
+    .step.completed .step-circle {
+        background: #28a745;
+        color: white;
+    }
+</style>
+{% endblock %}

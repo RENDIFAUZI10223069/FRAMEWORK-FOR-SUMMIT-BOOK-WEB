@@ -63,7 +63,7 @@
                         <strong>{{ route.get_duration_text }}</strong>
                     </div>
                 </div>
-                <a href="#booking" class="btn btn-success btn-lg">
+                <a href="{% url 'bookings:create' %}" class="btn btn-success btn-lg">
                     <i class="bi bi-calendar-check me-2"></i>Booking Sekarang
                 </a>
             </div>
@@ -185,7 +185,7 @@
                             <small class="text-muted">Sudah termasuk semua fasilitas</small>
                         </div>
                         <hr>
-                        <a href="#" class="btn btn-success w-100 btn-lg">
+                        <a href="{% url 'bookings:create' %}" class="btn btn-success w-100 btn-lg">
                             <i class="bi bi-calendar-check me-2"></i>Mulai Booking
                         </a>
                         <p class="text-center mt-3 mb-0">

@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('core.urls')),  
     path('accounts/', include('accounts.urls')),
     path('mountains/', include(('mountains.urls', 'mountains'), namespace='mountains')),
+    path('bookings/', include('bookings.urls')),
 ]
 
 # Serve media files in development

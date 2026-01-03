@@ -1,0 +1,499 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Summit Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 40px 0;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .auth-sidebar {
+        {% if role == 'admin' %}
+        background: linear-gradient(135deg, #FF6B6B, #FFE66D);
+        {% else %}
+        background: linear-gradient(135deg, #2D5016, #4A90E2);
+        {% endif %}
+        color: white;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .auth-form {
+        padding: 60px 40px;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+    
+    .form-control:focus, .form-select:focus {
+        border-color: {% if role == 'admin' %}#FF6B6B{% else %}#2D5016{% endif %};
+        box-shadow: 0 0 0 0.2rem {% if role == 'admin' %}rgba(255, 107, 107, 0.15){% else %}rgba(45, 80, 22, 0.15){% endif %};
+    }
+    
+    .password-strength {
+        height: 5px;
+        border-radius: 3px;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .role-badge {
+        {% if role == 'admin' %}
+        background: linear-gradient(135deg, #FF6B6B, #FFE66D);
+        {% else %}
+        background: linear-gradient(135deg, #2D5016, #4A90E2);
+        {% endif %}
+        color: white;
+        padding: 8px 20px;
+        border-radius: 20px;
+        font-weight: 600;
+        display: inline-block;
+        margin-bottom: 20px;
+    }
+    
+    .form-section {
+        margin-bottom: 30px;
+        padding-bottom: 30px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .form-section:last-child {
+        border-bottom: none;
+    }
+    
+    .section-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid {% if role == 'admin' %}#FFE66D{% else %}#2D5016{% endif %};
+    }
+    
+    @media (max-width: 768px) {
+        .auth-sidebar {
+            padding: 40px 20px;
+        }
+        .auth-form {
+            padding: 40px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="auth-container">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-11">
+                <div class="auth-card">
+                    <div class="row g-0">
+                        <!-- Sidebar -->
+                        <div class="col-lg-4 d-none d-lg-block">
+                            <div class="auth-sidebar">
+                                <div class="text-center mb-4">
+                                    {% if role == 'admin' %}
+                                        <i class="bi bi-shield-lock" style="font-size: 4rem;"></i>
+                                    {% else %}
+                                        <i class="bi bi-person-hiking" style="font-size: 4rem;"></i>
+                                    {% endif %}
+                                </div>
+                                
+                                {% if role == 'admin' %}
+                                    <h2 class="fw-bold mb-3">Registrasi Admin</h2>
+                                    <p class="mb-4">
+                                        Daftar sebagai admin untuk mengelola sistem booking, verifikasi pendaki, 
+                                        dan operasional pendakian Rinjani.
+                                    </p>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-3">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Kelola booking pendaki
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Dashboard & analitik
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Verifikasi check-in
+                                        </li>
+                                        <li>
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Laporan keuangan
+                                        </li>
+                                    </ul>
+                                {% else %}
+                                    <h2 class="fw-bold mb-3">Registrasi Pendaki</h2>
+                                    <p class="mb-4">
+                                        Bergabung dengan ribuan pendaki yang telah menaklukkan Gunung Rinjani 
+                                        via Jalur Senaru bersama kami.
+                                    </p>
+                                    <ul class="list-unstyled">
+                                        <li class="mb-3">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Booking online 24/7
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Check-in digital QR code
+                                        </li>
+                                        <li class="mb-3">
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Pemandu berpengalaman
+                                        </li>
+                                        <li>
+                                            <i class="bi bi-check-circle-fill me-2"></i>
+                                            Tracking real-time
+                                        </li>
+                                    </ul>
+                                {% endif %}
+                            </div>
+                        </div>
+                        
+                        <!-- Form -->
+                        <div class="col-lg-8">
+                            <div class="auth-form">
+                                <div class="text-center mb-4">
+                                    <span class="role-badge">
+                                        {% if role == 'admin' %}
+                                            <i class="bi bi-shield-lock me-2"></i>Admin
+                                        {% else %}
+                                            <i class="bi bi-person-hiking me-2"></i>Pendaki
+                                        {% endif %}
+                                    </span>
+                                    <h3 class="fw-bold mt-3">{{ page_title }}</h3>
+                                    <p class="text-muted">Lengkapi form di bawah untuk mendaftar</p>
+                                </div>
+                                
+                                <form method="POST" class="needs-validation" novalidate>
+                                    {% csrf_token %}
+                                    
+                                    <!-- SECTION 1: Data Diri -->
+                                    <div class="form-section">
+                                        <div class="section-title">
+                                            <i class="bi bi-person-badge me-2"></i>Data Diri
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.first_name.id_for_label }}" class="form-label fw-semibold">
+                                                    <i class="bi bi-person me-1"></i> {{ form.first_name.label }} <span class="text-danger">*</span>
+                                                </label>
+                                                {{ form.first_name }}
+                                                {% if form.first_name.errors %}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form.first_name.errors.0 }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.last_name.id_for_label }}" class="form-label fw-semibold">
+                                                    <i class="bi bi-person me-1"></i> {{ form.last_name.label }} <span class="text-danger">*</span>
+                                                </label>
+                                                {{ form.last_name }}
+                                                {% if form.last_name.errors %}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form.last_name.errors.0 }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- SECTION 2: Kontak -->
+                                    <div class="form-section">
+                                        <div class="section-title">
+                                            <i class="bi bi-envelope-at me-2"></i>Informasi Kontak
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">
+                                                    <i class="bi bi-envelope me-1"></i> {{ form.email.label }} <span class="text-danger">*</span>
+                                                </label>
+                                                {{ form.email }}
+                                                {% if form.email.errors %}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form.email.errors.0 }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.phone_number.id_for_label }}" class="form-label fw-semibold">
+                                                    <i class="bi bi-telephone me-1"></i> {{ form.phone_number.label }} <span class="text-danger">*</span>
+                                                </label>
+                                                {{ form.phone_number }}
+                                                {% if form.phone_number.errors %}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form.phone_number.errors.0 }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if role == 'admin' %}
+                                        <!-- SECTION 3: Admin Fields -->
+                                        <div class="form-section">
+                                            <div class="section-title">
+                                                <i class="bi bi-shield-check me-2"></i>Informasi Admin
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="{{ form.position.id_for_label }}" class="form-label fw-semibold">
+                                                    <i class="bi bi-briefcase me-1"></i> {{ form.position.label }} <span class="text-danger">*</span>
+                                                </label>
+                                                {{ form.position }}
+                                                <small class="text-muted d-block mt-1">
+                                                    Contoh: Manager Booking, Staff Operasional, Customer Service
+                                                </small>
+                                                {% if form.position.errors %}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form.position.errors.0 }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="mb-3">
+                                                <label for="{{ form.admin_secret_code.id_for_label }}" class="form-label fw-semibold">
+                                                    <i class="bi bi-key me-1"></i> {{ form.admin_secret_code.label }} <span class="text-danger">*</span>
+                                                </label>
+                                                {{ form.admin_secret_code }}
+                                                <small class="text-muted d-block mt-1">
+                                                    {{ form.admin_secret_code.help_text }}
+                                                </small>
+                                                {% if form.admin_secret_code.errors %}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form.admin_secret_code.errors.0 }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <!-- SECTION 3: Pendaki Fields -->
+                                        <div class="form-section">
+                                            <div class="section-title">
+                                                <i class="bi bi-card-checklist me-2"></i>Data Tambahan
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="{{ form.date_of_birth.id_for_label }}" class="form-label fw-semibold">
+                                                        <i class="bi bi-calendar me-1"></i> {{ form.date_of_birth.label }} <span class="text-danger">*</span>
+                                                    </label>
+                                                    {{ form.date_of_birth }}
+                                                    <small class="text-muted d-block mt-1">
+                                                        Minimal umur 17 tahun
+                                                    </small>
+                                                    {% if form.date_of_birth.errors %}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form.date_of_birth.errors.0 }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="{{ form.blood_type.id_for_label }}" class="form-label fw-semibold">
+                                                        <i class="bi bi-droplet me-1"></i> {{ form.blood_type.label }} <span class="text-danger">*</span>
+                                                    </label>
+                                                    {{ form.blood_type }}
+                                                    {% if form.blood_type.errors %}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form.blood_type.errors.0 }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- SECTION 4: Emergency Contact -->
+                                        <div class="form-section">
+                                            <div class="section-title">
+                                                <i class="bi bi-telephone-forward me-2"></i>Kontak Darurat
+                                            </div>
+                                            
+                                            <div class="alert alert-info small mb-3">
+                                                <i class="bi bi-info-circle me-2"></i>
+                                                <strong>Penting:</strong> Kontak darurat diperlukan untuk keselamatan Anda selama pendakian
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="{{ form.emergency_contact_name.id_for_label }}" class="form-label fw-semibold">
+                                                        <i class="bi bi-person-vcard me-1"></i> {{ form.emergency_contact_name.label }} <span class="text-danger">*</span>
+                                                    </label>
+                                                    {{ form.emergency_contact_name }}
+                                                    {% if form.emergency_contact_name.errors %}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form.emergency_contact_name.errors.0 }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="{{ form.emergency_contact_phone.id_for_label }}" class="form-label fw-semibold">
+                                                        <i class="bi bi-telephone-forward me-1"></i> {{ form.emergency_contact_phone.label }} <span class="text-danger">*</span>
+                                                    </label>
+                                                    {{ form.emergency_contact_phone }}
+                                                    {% if form.emergency_contact_phone.errors %}
+                                                        <div class="text-danger small mt-1">
+                                                            {{ form.emergency_contact_phone.errors.0 }}
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <!-- SECTION 5: Password -->
+                                    <div class="form-section">
+                                        <div class="section-title">
+                                            <i class="bi bi-lock me-2"></i>Keamanan Akun
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold">
+                                                    <i class="bi bi-lock me-1"></i> {{ form.password1.label }} <span class="text-danger">*</span>
+                                                </label>
+                                                {{ form.password1 }}
+                                                <div class="password-strength bg-secondary" id="passwordStrength"></div>
+                                                <small class="text-muted d-block mt-1">
+                                                    {{ form.password1.help_text }}
+                                                </small>
+                                                {% if form.password1.errors %}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form.password1.errors.0 }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            
+                                            <div class="col-md-6 mb-3">
+                                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold">
+                                                    <i class="bi bi-lock-fill me-1"></i> {{ form.password2.label }} <span class="text-danger">*</span>
+                                                </label>
+                                                {{ form.password2 }}
+                                                {% if form.password2.errors %}
+                                                    <div class="text-danger small mt-1">
+                                                        {{ form.password2.errors.0 }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    {% if role == 'pendaki' %}
+                                        <!-- Terms untuk Pendaki -->
+                                        <div class="mb-4">
+                                            <div class="form-check">
+                                                {{ form.agree_terms }}
+                                                <label class="form-check-label" for="{{ form.agree_terms.id_for_label }}">
+                                                    {{ form.agree_terms.label }} 
+                                                    <a href="#" class="text-success">Syarat & Ketentuan</a>
+                                                </label>
+                                            </div>
+                                            {% if form.agree_terms.errors %}
+                                                <div class="text-danger small mt-1">
+                                                    {{ form.agree_terms.errors.0 }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    <!-- Submit Button -->
+                                    <button type="submit" class="btn w-100 btn-lg mb-3 text-white" 
+                                            style="background: {% if role == 'admin' %}linear-gradient(135deg, #FF6B6B, #FFE66D){% else %}linear-gradient(135deg, #2D5016, #4A90E2){% endif %}; border: none;">
+                                        <i class="bi bi-person-plus me-2"></i> Daftar Sekarang
+                                    </button>
+                                    
+                                    <p class="text-center mb-0">
+                                        Sudah punya akun? 
+                                        <a href="{% url 'accounts:login' %}" class="{% if role == 'admin' %}text-warning{% else %}text-success{% endif %} fw-bold">Login di sini</a>
+                                    </p>
+                                </form>
+                                
+                                <!-- Back to choice -->
+                                <div class="text-center mt-3">
+                                    <a href="{% url 'accounts:register' %}" class="text-muted text-decoration-none small">
+                                        <i class="bi bi-arrow-left me-1"></i>Pilih role lain
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Password Strength Indicator
+    const passwordInput = document.getElementById('{{ form.password1.id_for_label }}');
+    if (passwordInput) {
+        passwordInput.addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBar = document.getElementById('passwordStrength');
+            
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/\d/)) strength++;
+            if (password.match(/[^a-zA-Z\d]/)) strength++;
+            
+            strengthBar.classList.remove('bg-danger', 'bg-warning', 'bg-info', 'bg-success', 'bg-secondary');
+            
+            if (strength === 0) {
+                strengthBar.classList.add('bg-secondary');
+                strengthBar.style.width = '0%';
+            } else if (strength === 1) {
+                strengthBar.classList.add('bg-danger');
+                strengthBar.style.width = '25%';
+            } else if (strength === 2) {
+                strengthBar.classList.add('bg-warning');
+                strengthBar.style.width = '50%';
+            } else if (strength === 3) {
+                strengthBar.classList.add('bg-info');
+                strengthBar.style.width = '75%';
+            } else {
+                strengthBar.classList.add('bg-success');
+                strengthBar.style.width = '100%';
+            }
+        });
+    }
+    
+    // Form validation
+    (function() {
+        'use strict';
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function(form) {
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+</script>
+{% endblock %}

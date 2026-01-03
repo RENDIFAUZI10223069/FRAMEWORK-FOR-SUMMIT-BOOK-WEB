@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Pembayaran - Step 3{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body p-4">
+                    <h3 class="fw-bold mb-4">
+                        <i class="bi bi-wallet2 text-success me-2"></i>
+                        Pembayaran
+                    </h3>
+                    
+                    <!-- Booking Summary -->
+                    <div class="alert alert-info">
+                        <h5>Ringkasan Booking</h5>
+                        <p class="mb-1"><strong>Kode:</strong> {{ booking.booking_code }}</p>
+                        <p class="mb-1"><strong>Jalur:</strong> {{ booking.route.name }}</p>
+                        <p class="mb-1"><strong>Tanggal:</strong> {{ booking.start_date|date:"d M Y" }}</p>
+                        <p class="mb-1"><strong>Peserta:</strong> {{ booking.num_participants }} orang</p>
+                        <p class="mb-0"><strong class="text-danger">Total:</strong> <strong class="text-danger">Rp {{ booking.total_price|floatformat:0 }}</strong></p>
+                    </div>
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Metode Pembayaran</label>
+                            {{ form.payment_method }}
+                        </div>
+                        
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Upload Bukti Pembayaran</label>
+                            {{ form.payment_proof }}
+                            <small class="text-muted d-block mt-1">Format: JPG, PNG (max 2MB)</small>
+                        </div>
+                        
+                        <!-- Bank Info -->
+                        <div class="card bg-light mb-4">
+                            <div class="card-body">
+                                <h6 class="fw-bold">Informasi Rekening</h6>
+                                <p class="mb-1"><strong>Bank BCA:</strong> 1234567890 a.n. Summit Book</p>
+                                <p class="mb-0"><strong>Bank Mandiri:</strong> 0987654321 a.n. Summit Book</p>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn btn-success w-100 btn-lg">
+                            Upload Bukti Pembayaran <i class="bi bi-upload ms-2"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
