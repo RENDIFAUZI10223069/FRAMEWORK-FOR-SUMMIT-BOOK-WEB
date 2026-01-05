@@ -108,7 +108,7 @@
                         <!-- Route Selection -->
                         <div class="mb-4">
                             <label class="form-label fw-semibold">
-                                <i class="bi bi-geo-alt me-1"></i> Pilih Jalur Pendakian <span class="text-danger">*</span>
+                               <i class="bi bi-backpack me-1"></i> Pilih Paket Pendakian <span class="text-danger">*</span>
                             </label>
                             
                             {% if routes %}
@@ -239,5 +239,16 @@
         const minDate = today.toISOString().split('T')[0];
         dateInput.min = minDate;
     }
+    // Auto-select route yang sudah dipilih dari home
+    document.addEventListener('DOMContentLoaded', function() {
+        const routeRadio = document.querySelector('input[name="route"][value="{{ selected_route.id }}"]');
+        if (routeRadio) {
+            routeRadio.checked = true;
+            // Scroll ke paket yang dipilih
+            routeRadio.closest('.route-card').scrollIntoView({ behavior: 'smooth', block: 'center' });
+            // Highlight paket yang dipilih
+            routeRadio.closest('.route-card').classList.add('border-success', 'shadow');
+        }
+    });
 </script>
 {% endblock %}

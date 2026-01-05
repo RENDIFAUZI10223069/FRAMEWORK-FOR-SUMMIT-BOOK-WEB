@@ -3,6 +3,59 @@
 
 {% block title %}Profil - {{ user.get_full_name }}{% endblock %}
 
+{% block extra_css %}
+<style>
+    .auth-container {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 40px 0;
+    }
+    
+    .auth-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        overflow: hidden;
+    }
+    
+    .auth-sidebar {
+        background: linear-gradient(135deg, #2D5016, #4A90E2);
+        color: white;
+        padding: 60px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    
+    .auth-form {
+        padding: 60px 40px;
+    }
+    
+    .form-control:focus {
+        border-color: #2D5016;
+        box-shadow: 0 0 0 0.2rem rgba(45, 80, 22, 0.15);
+    }
+    
+    .password-strength {
+        height: 5px;
+        border-radius: 3px;
+        margin-top: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    @media (max-width: 768px) {
+        .auth-sidebar {
+            padding: 40px 20px;
+        }
+        .auth-form {
+            padding: 40px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="container py-5">
     <div class="row">
@@ -81,7 +134,7 @@
                                     <small class="text-muted">Booking pendakian Rinjani</small>
                                 </div>
                             </div>
-                            <a href="#" class="btn btn-success btn-sm w-100">
+                            <a href="{% url 'bookings:create' %}" class="btn btn-success btn-sm w-100">
                                 Mulai Booking
                             </a>
                         </div>
@@ -100,7 +153,7 @@
                                     <small class="text-muted">Lihat booking sebelumnya</small>
                                 </div>
                             </div>
-                            <a href="#" class="btn btn-outline-info btn-sm w-100">
+                            <a href="{% url 'bookings:list' %}" class="btn btn-outline-info btn-sm w-100">
                                 Lihat Riwayat
                             </a>
                         </div>
@@ -112,266 +165,8 @@
 </div>
 {% endblock %}
 
-{% block extra_css %}
-<style>
-    .auth-container {
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        padding: 40px 0;
-    }
-    
-    .auth-card {
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-        overflow: hidden;
-    }
-    
-    .auth-sidebar {
-        background: linear-gradient(135deg, #2D5016, #4A90E2);
-        color: white;
-        padding: 60px 40px;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-    
-    .auth-form {
-        padding: 60px 40px;
-    }
-    
-    .form-control:focus {
-        border-color: #2D5016;
-        box-shadow: 0 0 0 0.2rem rgba(45, 80, 22, 0.15);
-    }
-    
-    .password-strength {
-        height: 5px;
-        border-radius: 3px;
-        margin-top: 10px;
-        transition: all 0.3s ease;
-    }
-    
-    @media (max-width: 768px) {
-        .auth-sidebar {
-            padding: 40px 20px;
-        }
-        .auth-form {
-            padding: 40px 20px;
-        }
-    }
-</style>
-{% endblock %}
-
-{% block content %}
-<div class="auth-container">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-10">
-                <div class="auth-card">
-                    <div class="row g-0">
-                        <!-- Sidebar -->
-                        <div class="col-lg-5 d-none d-lg-block">
-                            <div class="auth-sidebar">
-                                <div class="text-center mb-4">
-                                    <i class="bi bi-mountain" style="font-size: 4rem;"></i>
-                                </div>
-                                <h2 class="fw-bold mb-3">Bergabung dengan Summit Book</h2>
-                                <p class="mb-4">
-                                    Mulai petualangan Anda mendaki Gunung Rinjani via Jalur Senaru. 
-                                    Booking mudah, aman, dan terpercaya.
-                                </p>
-                                <ul class="list-unstyled">
-                                    <li class="mb-3">
-                                        <i class="bi bi-check-circle-fill me-2"></i>
-                                        Booking online 24/7
-                                    </li>
-                                    <li class="mb-3">
-                                        <i class="bi bi-check-circle-fill me-2"></i>
-                                        Pemandu lokal berpengalaman
-                                    </li>
-                                    <li class="mb-3">
-                                        <i class="bi bi-check-circle-fill me-2"></i>
-                                        Check-in digital dengan QR
-                                    </li>
-                                    <li>
-                                        <i class="bi bi-check-circle-fill me-2"></i>
-                                        Harga transparan
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        
-                        <!-- Form -->
-                        <div class="col-lg-7">
-                            <div class="auth-form">
-                                <div class="text-center mb-4">
-                                    <h3 class="fw-bold">Buat Akun Baru</h3>
-                                    <p class="text-muted">Isi form di bawah untuk mendaftar</p>
-                                </div>
-                                
-                                <form method="POST" class="needs-validation" novalidate>
-                                    {% csrf_token %}
-                                    
-                                    <div class="row">
-                                        <!-- Nama Depan -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="{{ form.first_name.id_for_label }}" class="form-label">
-                                                <i class="bi bi-person me-1"></i> {{ form.first_name.label }}
-                                            </label>
-                                            {{ form.first_name }}
-                                            {% if form.first_name.errors %}
-                                                <div class="text-danger small mt-1">
-                                                    {{ form.first_name.errors.0 }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                        
-                                        <!-- Nama Belakang -->
-                                        <div class="col-md-6 mb-3">
-                                            <label for="{{ form.last_name.id_for_label }}" class="form-label">
-                                                <i class="bi bi-person me-1"></i> {{ form.last_name.label }}
-                                            </label>
-                                            {{ form.last_name }}
-                                            {% if form.last_name.errors %}
-                                                <div class="text-danger small mt-1">
-                                                    {{ form.last_name.errors.0 }}
-                                                </div>
-                                            {% endif %}
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Email -->
-                                    <div class="mb-3">
-                                        <label for="{{ form.email.id_for_label }}" class="form-label">
-                                            <i class="bi bi-envelope me-1"></i> {{ form.email.label }}
-                                        </label>
-                                        {{ form.email }}
-                                        {% if form.email.errors %}
-                                            <div class="text-danger small mt-1">
-                                                {{ form.email.errors.0 }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <!-- Tanggal Lahir -->
-                                    <div class="mb-3">
-                                        <label for="{{ form.date_of_birth.id_for_label }}" class="form-label">
-                                            <i class="bi bi-calendar me-1"></i> {{ form.date_of_birth.label }}
-                                        </label>
-                                        {{ form.date_of_birth }}
-                                        <small class="text-muted d-block mt-1">
-                                            Minimal umur 17 tahun
-                                        </small>
-                                        {% if form.date_of_birth.errors %}
-                                            <div class="text-danger small mt-1">
-                                                {{ form.date_of_birth.errors.0 }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <!-- Password -->
-                                    <div class="mb-3">
-                                        <label for="{{ form.password1.id_for_label }}" class="form-label">
-                                            <i class="bi bi-lock me-1"></i> {{ form.password1.label }}
-                                        </label>
-                                        {{ form.password1 }}
-                                        <div class="password-strength bg-secondary" id="passwordStrength"></div>
-                                        <small class="text-muted d-block mt-1">
-                                            {{ form.password1.help_text }}
-                                        </small>
-                                        {% if form.password1.errors %}
-                                            <div class="text-danger small mt-1">
-                                                {{ form.password1.errors.0 }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <!-- Konfirmasi Password -->
-                                    <div class="mb-3">
-                                        <label for="{{ form.password2.id_for_label }}" class="form-label">
-                                            <i class="bi bi-lock-fill me-1"></i> {{ form.password2.label }}
-                                        </label>
-                                        {{ form.password2 }}
-                                        {% if form.password2.errors %}
-                                            <div class="text-danger small mt-1">
-                                                {{ form.password2.errors.0 }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <!-- Terms -->
-                                    <div class="mb-4">
-                                        <div class="form-check">
-                                            {{ form.agree_terms }}
-                                            <label class="form-check-label" for="{{ form.agree_terms.id_for_label }}">
-                                                {{ form.agree_terms.label }} 
-                                                <a href="#" class="text-success">Syarat & Ketentuan</a>
-                                            </label>
-                                        </div>
-                                        {% if form.agree_terms.errors %}
-                                            <div class="text-danger small mt-1">
-                                                {{ form.agree_terms.errors.0 }}
-                                            </div>
-                                        {% endif %}
-                                    </div>
-                                    
-                                    <!-- Submit Button -->
-                                    <button type="submit" class="btn btn-primary w-100 btn-lg mb-3" 
-                                            style="background: linear-gradient(135deg, #2D5016, #4A90E2); border: none;">
-                                        <i class="bi bi-person-plus me-2"></i> Daftar Sekarang
-                                    </button>
-                                    
-                                    <p class="text-center mb-0">
-                                        Sudah punya akun? 
-                                        <a href="{% url 'accounts:login' %}" class="text-success fw-bold">Login di sini</a>
-                                    </p>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-{% endblock %}
-
 {% block extra_js %}
 <script>
-    // Password Strength Indicator
-    document.getElementById('{{ form.password1.id_for_label }}').addEventListener('input', function(e) {
-        const password = e.target.value;
-        const strengthBar = document.getElementById('passwordStrength');
-        
-        let strength = 0;
-        if (password.length >= 8) strength++;
-        if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-        if (password.match(/\d/)) strength++;
-        if (password.match(/[^a-zA-Z\d]/)) strength++;
-        
-        strengthBar.classList.remove('bg-danger', 'bg-warning', 'bg-info', 'bg-success', 'bg-secondary');
-        
-        if (strength === 0) {
-            strengthBar.classList.add('bg-secondary');
-            strengthBar.style.width = '0%';
-        } else if (strength === 1) {
-            strengthBar.classList.add('bg-danger');
-            strengthBar.style.width = '25%';
-        } else if (strength === 2) {
-            strengthBar.classList.add('bg-warning');
-            strengthBar.style.width = '50%';
-        } else if (strength === 3) {
-            strengthBar.classList.add('bg-info');
-            strengthBar.style.width = '75%';
-        } else {
-            strengthBar.classList.add('bg-success');
-            strengthBar.style.width = '100%';
-        }
-    });
-    
     // Form validation
     (function() {
         'use strict';

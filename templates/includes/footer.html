@@ -6,23 +6,23 @@
             <!-- About Section -->
             <div class="col-lg-4 col-md-6">
                 <h5 class="mb-3 fw-bold">
-                    <i class="bi bi-mountain"></i> Summit Book
+                    <i class="bi bi-mountain text-success"></i> Summit Book
                 </h5>
-                <p class="text-muted small mb-3">
+                <p class="text-light-gray mb-3" style="font-size: 0.9rem; line-height: 1.6;">
                     Platform booking pendakian Gunung Rinjani via Jalur Senaru yang aman, mudah, dan terpercaya. 
                     Terdaftar resmi di Taman Nasional Gunung Rinjani (TNGL).
                 </p>
-                <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                <div class="social-links d-flex gap-2">
+                    <a href="#" class="social-icon" aria-label="Facebook">
                         <i class="bi bi-facebook"></i>
                     </a>
-                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                    <a href="#" class="social-icon" aria-label="Instagram">
                         <i class="bi bi-instagram"></i>
                     </a>
-                    <a href="#" class="btn btn-outline-light btn-sm rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
-                        <i class="bi bi-twitter"></i>
+                    <a href="#" class="social-icon" aria-label="Twitter">
+                        <i class="bi bi-twitter-x"></i>
                     </a>
-                    <a href="https://wa.me/6281234567890" class="btn btn-success btn-sm rounded-circle" style="width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;">
+                    <a href="https://wa.me/6281234567890" class="social-icon whatsapp" aria-label="WhatsApp">
                         <i class="bi bi-whatsapp"></i>
                     </a>
                 </div>
@@ -30,30 +30,30 @@
             
             <!-- Quick Links -->
             <div class="col-lg-2 col-md-6">
-                <h6 class="mb-3 fw-bold">Tentang Rinjani</h6>
-                <ul class="list-unstyled">
+                <h6 class="mb-3 fw-bold text-white">Tentang Rinjani</h6>
+                <ul class="list-unstyled footer-links">
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
+                        <a href="#" class="footer-link">
                             <i class="bi bi-chevron-right"></i> Jalur Senaru
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
-                            <i class="bi bi-chevron-right"></i> Rute Pendakian
+                        <a href="#" class="footer-link">
+                            <i class="bi bi-chevron-right"></i> Paket Pendakian
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
+                        <a href="#" class="footer-link">
                             <i class="bi bi-chevron-right"></i> Aturan TNGL
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
+                        <a href="#" class="footer-link">
                             <i class="bi bi-chevron-right"></i> Persiapan
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
+                        <a href="#" class="footer-link">
                             <i class="bi bi-chevron-right"></i> Tips & Trik
                         </a>
                     </li>
@@ -62,30 +62,30 @@
             
             <!-- Services -->
             <div class="col-lg-2 col-md-6">
-                <h6 class="mb-3 fw-bold">Layanan</h6>
-                <ul class="list-unstyled">
+                <h6 class="mb-3 fw-bold text-white">Layanan</h6>
+                <ul class="list-unstyled footer-links">
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
+                        <a href="{% url 'bookings:create' %}" class="footer-link">
                             <i class="bi bi-chevron-right"></i> Booking Online
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
-                            <i class="bi bi-chevron-right"></i> Check-in Digital
+                        <a href="{% url 'bookings:list' %}" class="footer-link">
+                            <i class="bi bi-chevron-right"></i> Booking Saya
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
+                        <a href="#" class="footer-link">
                             <i class="bi bi-chevron-right"></i> Paket Wisata
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
+                        <a href="#" class="footer-link">
                             <i class="bi bi-chevron-right"></i> Pemandu Lokal
                         </a>
                     </li>
                     <li class="mb-2">
-                        <a href="#" class="text-muted text-decoration-none small hover-link">
+                        <a href="#" class="footer-link">
                             <i class="bi bi-chevron-right"></i> FAQ
                         </a>
                     </li>
@@ -94,73 +94,188 @@
             
             <!-- Contact Info -->
             <div class="col-lg-4 col-md-6">
-                <h6 class="mb-3 fw-bold">Hubungi Kami</h6>
-                <ul class="list-unstyled small">
-                    <li class="mb-3 d-flex">
-                        <i class="bi bi-geo-alt-fill text-success me-2 mt-1"></i>
-                        <span class="text-muted">
-                            Desa Senaru, Kecamatan Bayan<br>
-                            Lombok Utara, NTB 83354
-                        </span>
-                    </li>
-                    <li class="mb-3 d-flex">
-                        <i class="bi bi-envelope-fill text-success me-2 mt-1"></i>
-                        <div>
-                            <a href="mailto:info@summitbook.com" class="text-muted text-decoration-none hover-link">
-                                info@summitbook.com
-                            </a><br>
-                            <a href="mailto:booking@summitbook.com" class="text-muted text-decoration-none hover-link">
-                                booking@summitbook.com
-                            </a>
+                <h6 class="mb-3 fw-bold text-white">Hubungi Kami</h6>
+                <ul class="list-unstyled contact-info">
+                    <li class="mb-3">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-geo-alt-fill text-success me-3 mt-1 fs-5"></i>
+                            <div>
+                                <p class="mb-0 text-light-gray">
+                                    Desa Senaru, Kecamatan Bayan<br>
+                                    Lombok Utara, NTB 83354
+                                </p>
+                            </div>
                         </div>
                     </li>
-                    <li class="mb-3 d-flex">
-                        <i class="bi bi-phone-fill text-success me-2 mt-1"></i>
-                        <div>
-                            <a href="tel:+6281234567890" class="text-muted text-decoration-none hover-link">
-                                +62 812-3456-7890
-                            </a><br>
-                            <a href="https://wa.me/6281234567890" class="text-muted text-decoration-none hover-link">
-                                WhatsApp: +62 812-3456-7890
-                            </a>
+                    <li class="mb-3">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-envelope-fill text-success me-3 mt-1 fs-5"></i>
+                            <div>
+                                <a href="mailto:info@summitbook.com" class="contact-link d-block mb-1">
+                                    info@summitbook.com
+                                </a>
+                                <a href="mailto:booking@summitbook.com" class="contact-link d-block">
+                                    booking@summitbook.com
+                                </a>
+                            </div>
                         </div>
                     </li>
-                    <li class="d-flex">
-                        <i class="bi bi-clock-fill text-success me-2 mt-1"></i>
-                        <span class="text-muted">
-                            Senin - Minggu: 08:00 - 20:00 WITA<br>
-                            <small class="text-success">Customer Service 24/7</small>
-                        </span>
+                    <li class="mb-3">
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-phone-fill text-success me-3 mt-1 fs-5"></i>
+                            <div>
+                                <a href="tel:+6281234567890" class="contact-link d-block mb-1">
+                                    +62 812-3456-7890
+                                </a>
+                                <a href="https://wa.me/6281234567890" class="contact-link d-block">
+                                    <i class="bi bi-whatsapp text-success"></i> WhatsApp CS
+                                </a>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="d-flex align-items-start">
+                            <i class="bi bi-clock-fill text-success me-3 mt-1 fs-5"></i>
+                            <div>
+                                <p class="mb-1 text-light-gray">Senin - Minggu: 08:00 - 20:00 WITA</p>
+                                <span class="badge bg-success">Customer Service 24/7</span>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>
         </div>
         
-        <hr class="border-secondary my-4">
+        <hr class="border-secondary my-4 opacity-25">
         
         <!-- Bottom Footer -->
         <div class="row align-items-center">
             <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                <p class="small mb-0 text-muted">
-                    © 2025 <strong>Summit Book</strong>. All rights reserved.
-                    <span class="d-none d-md-inline">| Powered by Django & Bootstrap</span>
+                <p class="mb-0 text-light-gray" style="font-size: 0.9rem;">
+                    © 2025 <strong class="text-white">Summit Book</strong>. All rights reserved.
+                    <span class="d-none d-lg-inline text-muted">| Powered by Django & Bootstrap</span>
                 </p>
             </div>
             <div class="col-md-6 text-center text-md-end">
-                <a href="#" class="text-muted text-decoration-none small me-3 hover-link">Privacy Policy</a>
-                <a href="#" class="text-muted text-decoration-none small me-3 hover-link">Terms of Service</a>
-                <a href="#" class="text-muted text-decoration-none small hover-link">Sitemap</a>
+                <div class="footer-bottom-links">
+                    <a href="#" class="bottom-link">Privacy Policy</a>
+                    <span class="text-muted mx-2">•</span>
+                    <a href="#" class="bottom-link">Terms of Service</a>
+                    <span class="text-muted mx-2">•</span>
+                    <a href="#" class="bottom-link">Sitemap</a>
+                </div>
             </div>
         </div>
     </div>
 </footer>
 
 <style>
-    .hover-link {
+    /* Footer Base Styles */
+    footer {
+        margin-top: auto;
+        background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+    }
+
+    .text-light-gray {
+        color: #b8b8b8 !important;
+    }
+
+    /* Social Icons */
+    .social-icon {
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-size: 1.1rem;
+    }
+
+    .social-icon:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px);
+        color: white;
+    }
+
+    .social-icon.whatsapp:hover {
+        background: #25D366;
+        color: white;
+    }
+
+    /* Footer Links */
+    .footer-links {
+        margin: 0;
+        padding: 0;
+    }
+
+    .footer-link {
+        color: #b8b8b8;
+        text-decoration: none;
+        font-size: 0.9rem;
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+
+    .footer-link:hover {
+        color: #2D5016;
+        padding-left: 5px;
+    }
+
+    .footer-link i {
+        font-size: 0.7rem;
+        opacity: 0.5;
+    }
+
+    /* Contact Links */
+    .contact-link {
+        color: #b8b8b8;
+        text-decoration: none;
+        font-size: 0.9rem;
         transition: all 0.3s ease;
     }
-    .hover-link:hover {
-        color: #4A90E2 !important;
-        padding-left: 5px;
+
+    .contact-link:hover {
+        color: #2D5016;
+    }
+
+    .contact-info {
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Bottom Links */
+    .bottom-link {
+        color: #b8b8b8;
+        text-decoration: none;
+        font-size: 0.85rem;
+        transition: all 0.3s ease;
+    }
+
+    .bottom-link:hover {
+        color: #2D5016;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        footer .col-md-6 {
+            text-align: center !important;
+        }
+
+        .footer-bottom-links {
+            margin-top: 10px;
+        }
+
+        .social-links {
+            justify-content: center;
+        }
+    }
+
+    /* Smooth Scrolling for Anchor Links */
+    html {
+        scroll-behavior: smooth;
     }
 </style>

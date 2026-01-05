@@ -11,6 +11,25 @@ from mountains.models import Route
 @login_required
 def booking_create_step1(request):
     """Step 1: Pilih jadwal & jumlah peserta"""
+    
+    # Ambil parameter package dari URL
+    package_type = request.GET.get('package', None)
+    selected_route = None
+    
+    # Mapping package ke slug route
+    package_mapping = {
+        'hemat': 'paket-hemat-2h1m',
+        'populer': 'jalur-senaru',
+        'premium': 'paket-premium-4h3m'
+    }
+    
+    # Cari route berdasarkan package yang dipilih
+    if package_type and package_type in package_mapping:
+        try:
+            selected_route = Route.objects.get(slug=package_mapping[package_type], is_active=True)
+        except Route.DoesNotExist:
+            pass
+    
     if request.method == 'POST':
         form = BookingForm(request.POST)
         if form.is_valid():
@@ -26,18 +45,20 @@ def booking_create_step1(request):
             messages.success(request, 'Booking berhasil dibuat. Silakan lengkapi data peserta.')
             return redirect('bookings:participants', booking_id=booking.id)
     else:
-        # Pre-fill route if from mountains page
-        route_id = request.GET.get('route')
-        initial = {'route': route_id} if route_id else {}
+        # Pre-fill route jika ada package yang dipilih
+        initial = {}
+        if selected_route:
+            initial['route'] = selected_route.id
+        
         form = BookingForm(initial=initial)
     
     context = {
         'form': form,
         'routes': Route.objects.filter(is_active=True),
+        'selected_route': selected_route,
         'page_title': 'Buat Booking Baru'
     }
     return render(request, 'bookings/create_step1.html', context)
-
 
 @login_required
 def booking_participants_step2(request, booking_id):
