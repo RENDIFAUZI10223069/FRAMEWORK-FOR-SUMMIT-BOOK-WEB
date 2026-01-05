@@ -37,14 +37,14 @@
         min-height: 100vh;
         display: flex;
         align-items: center;
-        background: linear-gradient(135deg, #0f3d28 0%, #1a5f3f 50%, #2d8659 100%);
+        background: linear-gradient(50deg, #000000 0%, #000000 0%, #000000 0%);
         overflow: hidden;
     }
 
     .hero-bg {
         position: absolute;
         inset: 0;
-        background: url('static/images/rinjani.jpg') center/cover;
+        background: url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=1920&q=80') center/cover;
         opacity: 0.15;
         filter: blur(2px);
     }
@@ -938,9 +938,9 @@
                         <li class="text-muted"><i class="bi bi-x-circle"></i> Summit attack</li>
                     </ul>
 
-                    <button class="btn btn-outline-success w-100 btn-lg">
+                    <a href="{% url 'bookings:create' %}?package=hemat" class="btn btn-outline-success w-100 btn-lg">
                         Pilih Paket Ini
-                    </button>
+                    </a>
                 </div>
             </div>
 
@@ -965,9 +965,9 @@
                         <li><strong><i class="bi bi-check-circle-fill"></i> Summit attack 3.726 mdpl</strong></li>
                     </ul>
 
-                    <button class="btn btn-primary-custom w-100 btn-lg">
-                        Pilih Paket Ini
-                    </button>
+                     <a href="{% url 'bookings:create' %}?package=populer" class="btn btn-primary-custom w-100 btn-lg">
+                         Pilih Paket Ini
+                    </a>
                 </div>
             </div>
 
@@ -990,9 +990,9 @@
                         <li><strong><i class="bi bi-check-circle-fill"></i> Summit + Hot spring</strong></li>
                     </ul>
 
-                    <button class="btn btn-outline-success w-100 btn-lg">
+                    <a href="{% url 'bookings:create' %}?package=premium" class="btn btn-outline-success w-100 btn-lg">
                         Pilih Paket Ini
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>

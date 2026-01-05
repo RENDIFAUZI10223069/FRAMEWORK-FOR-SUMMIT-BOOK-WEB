@@ -7,21 +7,24 @@ def rinjani_senaru_detail(request):
     # Get Rinjani mountain
     mountain = get_object_or_404(Mountain, slug='gunung-rinjani')
     
-    # Get Senaru route
-    route = get_object_or_404(Route, mountain=mountain, slug='jalur-senaru')
+    # Get all packages/routes for Rinjani (sorted by duration)
+    all_packages = Route.objects.filter(
+        mountain=mountain, 
+        is_active=True
+    ).order_by('duration_days')
+    
+    # Get first route as main route (or specific one)
+    route = all_packages.first()
     
     # Get gallery
-    gallery = MountainGallery.objects.filter(mountain=mountain, route=route)[:6]
-    
-    # Get other routes
-    other_routes = Route.objects.filter(mountain=mountain, is_active=True).exclude(id=route.id)
+    gallery = MountainGallery.objects.filter(mountain=mountain)[:6]
     
     context = {
         'mountain': mountain,
         'route': route,
+        'all_packages': all_packages,
         'gallery': gallery,
-        'other_routes': other_routes,
-        'page_title': f'{mountain.name} via {route.name}'
+        'page_title': f'{mountain.name} - Paket Pendakian'
     }
     return render(request, 'mountains/rinjani_senaru_detail.html', context)
 
@@ -44,7 +47,9 @@ class MountainDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['routes'] = self.object.routes.filter(is_active=True)
+        # Get all active routes/packages
+        context['routes'] = self.object.routes.filter(is_active=True).order_by('duration_days')
+        context['all_packages'] = context['routes']  # Alias untuk template
         context['gallery'] = self.object.gallery.all()[:12]
         return context
 
@@ -61,6 +66,18 @@ class RouteDetailView(DetailView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['mountain'] = self.object.mountain
-        context['gallery'] = self.object.gallery.all()
+        mountain = self.object.mountain
+        
+        # Get mountain
+        context['mountain'] = mountain
+        
+        # Get all packages/routes for this mountain (sorted by duration)
+        context['all_packages'] = Route.objects.filter(
+            mountain=mountain,
+            is_active=True
+        ).order_by('duration_days')
+        
+        # Get gallery (from mountain, not just route)
+        context['gallery'] = MountainGallery.objects.filter(mountain=mountain)[:6]
+        
         return context
