@@ -1,0 +1,693 @@
+<!-- templates/dashboard/admin/checkins.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Summit Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Dashboard Sidebar - Same as home.html */
+    .admin-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 260px;
+        background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+        padding-top: 80px;
+        overflow-y: auto;
+        z-index: 999;
+        transition: all 0.3s ease;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+    }
+
+    .admin-sidebar::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .admin-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(45, 80, 22, 0.5);
+        border-radius: 10px;
+    }
+
+    .admin-content {
+        margin-left: 260px;
+        padding: 100px 30px 80px;
+        min-height: calc(100vh - 200px);
+        background: #f5f7fa;
+    }
+
+    footer {
+        margin-left: 260px;
+        transition: margin-left 0.3s ease;
+    }
+
+    .sidebar-header {
+        padding: 0 25px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 20px;
+    }
+
+    .sidebar-header h5 {
+        color: white;
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .sidebar-header p {
+        color: #b8b8b8;
+        margin: 5px 0 0;
+        font-size: 12px;
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 5px;
+    }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 14px 25px;
+        color: #b8b8b8;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+        background: rgba(45, 80, 22, 0.2);
+        color: white;
+        padding-left: 30px;
+    }
+
+    .sidebar-menu a i {
+        width: 24px;
+        margin-right: 12px;
+        font-size: 18px;
+    }
+
+    .sidebar-menu a.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: #2D5016;
+    }
+
+    .sidebar-menu .badge {
+        margin-left: auto;
+        font-size: 11px;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    /* Filter Card */
+    .filter-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Check-in Card */
+    .checkin-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid #2D5016;
+    }
+
+    .checkin-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    }
+
+    .checkin-card.pending {
+        border-left-color: #ffc107;
+    }
+
+    .checkin-card.verified {
+        border-left-color: #28a745;
+    }
+
+    .checkin-card.rejected {
+        border-left-color: #dc3545;
+    }
+
+    .participant-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2D5016, #3d6b1e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 24px;
+    }
+
+    .document-preview {
+        width: 120px;
+        height: 80px;
+        border-radius: 8px;
+        object-fit: cover;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .document-preview:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+
+    .qr-code-preview {
+        width: 80px;
+        height: 80px;
+        border-radius: 8px;
+        border: 2px solid #e9ecef;
+    }
+
+    /* Status Badges */
+    .badge-status {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .badge-verified {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .badge-rejected {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    /* Action Buttons */
+    .btn-verify {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-verify:hover {
+        background: #218838;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    .btn-reject {
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+
+    .btn-reject:hover {
+        background: #c82333;
+        color: white;
+        transform: translateY(-2px);
+    }
+
+    /* Stats Summary */
+    .stats-summary {
+        display: flex;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .stat-box {
+        flex: 1;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .stat-box h3 {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0 0 5px 0;
+    }
+
+    .stat-box.pending h3 { color: #ffc107; }
+    .stat-box.verified h3 { color: #28a745; }
+    .stat-box.rejected h3 { color: #dc3545; }
+
+    .stat-box p {
+        margin: 0;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #6c757d;
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        margin-bottom: 20px;
+        opacity: 0.3;
+    }
+
+    /* Modal Styles */
+    .modal-image {
+        width: 100%;
+        max-height: 500px;
+        object-fit: contain;
+        border-radius: 8px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .admin-sidebar {
+            transform: translateX(-100%);
+        }
+
+        .admin-sidebar.show {
+            transform: translateX(0);
+        }
+
+        .admin-content {
+            margin-left: 0;
+        }
+
+        footer {
+            margin-left: 0;
+        }
+
+        .mobile-menu-toggle {
+            display: flex;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #2D5016;
+            color: white;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .stats-summary {
+            flex-direction: column;
+        }
+    }
+
+    @media (min-width: 993px) {
+        .mobile-menu-toggle {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar -->
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+        <h5><i class="bi bi-mountain text-success"></i> Admin Panel</h5>
+        <p>{{ user.get_full_name|default:user.email }}</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li>
+            <a href="{% url 'dashboard:admin' %}">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:admin-bookings' %}">
+                <i class="bi bi-calendar-check"></i>
+                <span>Kelola Booking</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:admin-checkins' %}" class="active">
+                <i class="bi bi-person-check"></i>
+                <span>Verifikasi Check-in</span>
+                {% if checkins|length > 0 %}
+                <span class="badge bg-danger rounded-pill">{{ checkins|length }}</span>
+                {% endif %}
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:admin-reports' %}">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Laporan & Statistik</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="event.preventDefault();">
+                <i class="bi bi-mountain"></i>
+                <span>Kelola Gunung</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="event.preventDefault();">
+                <i class="bi bi-map"></i>
+                <span>Kelola Jalur</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="event.preventDefault();">
+                <i class="bi bi-people"></i>
+                <span>Kelola User</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="event.preventDefault();">
+                <i class="bi bi-gear"></i>
+                <span>Pengaturan</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+
+<!-- Main Content -->
+<div class="admin-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">
+                    <i class="bi bi-person-check text-success me-2"></i>
+                    Verifikasi Check-in
+                </h1>
+                <p class="text-muted mb-0">Kelola dan verifikasi check-in pendaki</p>
+            </div>
+            <div>
+                <a href="{% url 'checkins:scan' %}" class="btn btn-success">
+                    <i class="bi bi-qr-code-scan me-2"></i>Scan QR Code
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="stats-summary">
+        <div class="stat-box pending">
+            <h3>{{ total_pending }}</h3>
+            <p>Menunggu Verifikasi</p>
+        </div>
+        <div class="stat-box verified">
+            <h3>{{ total_verified }}</h3>
+            <p>Terverifikasi</p>
+        </div>
+        <div class="stat-box rejected">
+            <h3>{{ total_rejected }}</h3>
+            <p>Ditolak</p>
+        </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-card">
+        <form method="GET" class="row g-3">
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">Semua Status</option>
+                    <option value="pending" {% if status == 'pending' %}selected{% endif %}>Menunggu Verifikasi</option>
+                    <option value="verified" {% if status == 'verified' %}selected{% endif %}>Terverifikasi</option>
+                    <option value="rejected" {% if status == 'rejected' %}selected{% endif %}>Ditolak</option>
+                </select>
+            </div>
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Pencarian</label>
+                <input type="text" name="search" class="form-control" placeholder="Cari nama, NIK, kode booking...">
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+                <button type="submit" class="btn btn-success me-2">
+                    <i class="bi bi-search me-1"></i>Filter
+                </button>
+                <a href="{% url 'dashboard:admin-checkins' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i>Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Check-in List -->
+    {% if checkins %}
+        {% for checkin in checkins %}
+        <div class="checkin-card {{ checkin.status }}">
+            <div class="row align-items-center">
+                <!-- Participant Info -->
+                <div class="col-lg-3">
+                    <div class="d-flex align-items-center">
+                        <div class="participant-avatar me-3">
+                            {{ checkin.participant.full_name|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold">{{ checkin.participant.full_name }}</h6>
+                            <small class="text-muted d-block">NIK: {{ checkin.participant.id_number }}</small>
+                            <small class="text-muted d-block">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                {{ checkin.created_at|date:"d M Y, H:i" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Info -->
+                <div class="col-lg-2">
+                    <small class="text-muted d-block">Booking</small>
+                    <strong class="text-success">{{ checkin.booking.booking_code }}</strong>
+                    <small class="text-muted d-block">{{ checkin.booking.route.mountain.name }}</small>
+                </div>
+
+                <!-- Documents Preview -->
+                <div class="col-lg-3">
+                    <small class="text-muted d-block mb-2">Dokumen</small>
+                    <div class="d-flex gap-2">
+                        {% if checkin.id_card_photo %}
+                        <img src="{{ checkin.id_card_photo.url }}" 
+                             class="document-preview" 
+                             alt="KTP"
+                             data-bs-toggle="modal"
+                             data-bs-target="#imageModal{{ checkin.id }}"
+                             title="Klik untuk perbesar">
+                        {% endif %}
+                        {% if checkin.selfie_photo %}
+                        <img src="{{ checkin.selfie_photo.url }}" 
+                             class="document-preview" 
+                             alt="Selfie"
+                             data-bs-toggle="modal"
+                             data-bs-target="#selfieModal{{ checkin.id }}"
+                             title="Klik untuk perbesar">
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- QR Code -->
+                <div class="col-lg-2 text-center">
+                    {% if checkin.qr_code %}
+                    <img src="{{ checkin.qr_code.url }}" class="qr-code-preview" alt="QR Code">
+                    <small class="text-muted d-block mt-1">QR Generated</small>
+                    {% else %}
+                    <i class="bi bi-qr-code text-muted" style="font-size: 48px;"></i>
+                    <small class="text-muted d-block">No QR</small>
+                    {% endif %}
+                </div>
+
+                <!-- Actions -->
+                <div class="col-lg-2">
+                    <div class="d-flex flex-column gap-2">
+                        {% if checkin.status == 'pending' %}
+                        <a href="{% url 'dashboard:admin-verify-checkin' checkin.id %}" 
+                           class="btn btn-sm btn-verify">
+                            <i class="bi bi-check-circle me-1"></i>Verifikasi
+                        </a>
+                        <button type="button" 
+                                class="btn btn-sm btn-reject"
+                                data-bs-toggle="modal"
+                                data-bs-target="#rejectModal{{ checkin.id }}">
+                            <i class="bi bi-x-circle me-1"></i>Tolak
+                        </button>
+                        {% else %}
+                        <span class="badge-status badge-{{ checkin.status }}">
+                            {{ checkin.get_status_display }}
+                        </span>
+                        {% if checkin.verified_by %}
+                        <small class="text-muted">
+                            oleh {{ checkin.verified_by.get_full_name|default:checkin.verified_by.email }}
+                        </small>
+                        {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if checkin.notes %}
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="alert alert-info mb-0 py-2">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Catatan:</strong> {{ checkin.notes }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Image Modal -->
+        <div class="modal fade" id="imageModal{{ checkin.id }}" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Foto KTP - {{ checkin.participant.full_name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="{{ checkin.id_card_photo.url }}" class="modal-image" alt="KTP">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Selfie Modal -->
+        {% if checkin.selfie_photo %}
+        <div class="modal fade" id="selfieModal{{ checkin.id }}" tabindex="-1">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Foto Selfie - {{ checkin.participant.full_name }}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body text-center">
+                        <img src="{{ checkin.selfie_photo.url }}" class="modal-image" alt="Selfie">
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Reject Modal -->
+        <div class="modal fade" id="rejectModal{{ checkin.id }}" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form method="POST" action="{% url 'dashboard:admin-verify-checkin' checkin.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="reject">
+                        <div class="modal-header">
+                            <h5 class="modal-title">Tolak Check-in</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>Anda yakin ingin menolak check-in <strong>{{ checkin.participant.full_name }}</strong>?</p>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Alasan Penolakan</label>
+                                <textarea name="reason" class="form-control" rows="3" required></textarea>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-danger">Tolak Check-in</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <h5>Tidak Ada Check-in</h5>
+        <p>
+            {% if status %}
+                Tidak ada check-in dengan status "{{ status }}"
+            {% else %}
+                Belum ada check-in yang perlu diverifikasi
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Mobile Menu Toggle -->
+<button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <i class="bi bi-list fs-4"></i>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Mobile Menu Toggle
+    const sidebar = document.getElementById('adminSidebar');
+    const mobileToggle = document.getElementById('mobileMenuToggle');
+
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+                sidebar.classList.remove('show');
+            }
+        });
+    }
+
+    // Auto-refresh every 30 seconds for new check-ins
+    // setTimeout(function() {
+    //     location.reload();
+    // }, 30000);
+</script>
+{% endblock %}
