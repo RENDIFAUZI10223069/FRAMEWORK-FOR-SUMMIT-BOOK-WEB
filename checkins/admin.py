@@ -1,103 +1,150 @@
-from django.db import models
-from django.conf import settings
-from bookings.models import Booking, BookingParticipant
+# checkins/admin.py
+from django.contrib import admin
+from django.utils.html import format_html
+from django.utils import timezone
+from .models import CheckIn
 
-class CheckIn(models.Model):
-    """Model untuk Check-in Pendaki"""
-    
-    STATUS_CHOICES = [
-        ('pending', 'Menunggu Verifikasi'),
-        ('verified', 'Terverifikasi'),
-        ('rejected', 'Ditolak'),
+@admin.register(CheckIn)
+class CheckInAdmin(admin.ModelAdmin):
+    list_display = [
+        'booking_code',
+        'participant_name',
+        'status_badge',
+        'created_at',
+        'verified_by',
+        'verified_at'
+    ]
+    list_filter = [
+        'status',
+        'created_at',
+        'verified_at',
+        # 'booking__mountain'  # ← HAPUS INI jika field tidak ada
+    ]
+    search_fields = [
+        'booking__booking_code',
+        'participant__full_name',
+        'participant__id_number',
+        'qr_data'
+    ]
+    readonly_fields = [
+        'created_at',
+        'updated_at',
+        'qr_code_preview',
+        'id_card_preview',
+        'selfie_preview'
     ]
     
-    booking = models.ForeignKey(
-        Booking,
-        on_delete=models.CASCADE,
-        related_name='checkins',
-        verbose_name='Booking'
-    )
-    participant = models.ForeignKey(
-        BookingParticipant,
-        on_delete=models.CASCADE,
-        related_name='checkins',
-        verbose_name='Peserta'
-    )
-    
-    # Documents
-    id_card_photo = models.ImageField(
-        upload_to='checkins/id_cards/',
-        verbose_name='Foto KTP/Identitas'
-    )
-    selfie_photo = models.ImageField(
-        upload_to='checkins/selfies/',
-        blank=True,
-        null=True,
-        verbose_name='Foto Selfie dengan KTP'
-    )
-    
-    # QR Code
-    qr_code = models.ImageField(
-        upload_to='checkins/qr_codes/',
-        blank=True,
-        null=True,
-        verbose_name='QR Code'
-    )
-    qr_data = models.CharField(
-        max_length=200,
-        blank=True,
-        unique=True,
-        verbose_name='Data QR Code'
+    fieldsets = (
+        ('Informasi Booking', {
+            'fields': ('booking', 'participant')
+        }),
+        ('Dokumen', {
+            'fields': (
+                'id_card_photo',
+                'id_card_preview',
+                'selfie_photo',
+                'selfie_preview'
+            )
+        }),
+        ('QR Code', {
+            'fields': ('qr_code', 'qr_code_preview', 'qr_data')
+        }),
+        ('Status Verifikasi', {
+            'fields': (
+                'status',
+                'verified_by',
+                'verified_at',
+                'rejection_reason',
+                'notes'
+            )
+        }),
+        ('Timestamps', {
+            'fields': ('created_at', 'updated_at'),
+            'classes': ('collapse',)
+        }),
     )
     
-    # Status
-    status = models.CharField(
-        max_length=20,
-        choices=STATUS_CHOICES,
-        default='pending',
-        verbose_name='Status'
-    )
-    verified_by = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name='verified_checkins',
-        verbose_name='Diverifikasi Oleh'
-    )
-    verified_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        verbose_name='Waktu Verifikasi'
-    )
-    rejection_reason = models.TextField(
-        blank=True,
-        verbose_name='Alasan Penolakan'
-    )
+    actions = ['verify_checkins', 'reject_checkins']
     
-    # Notes
-    notes = models.TextField(
-        blank=True,
-        verbose_name='Catatan'
-    )
+    def booking_code(self, obj):
+        return obj.booking.booking_code
+    booking_code.short_description = 'Kode Booking'
     
-    # Timestamps
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    def participant_name(self, obj):
+        return obj.participant.full_name
+    participant_name.short_description = 'Nama Peserta'
     
-    class Meta:
-        verbose_name = 'Check-in'
-        verbose_name_plural = 'Check-ins'
-        unique_together = ['booking', 'participant']
-        ordering = ['-created_at']
-    
-    def __str__(self):
-        return f"Check-in: {self.participant.full_name} - {self.booking.booking_code}"
-    
-    def get_status_badge_class(self):
-        badge_classes = {
-            'pending': 'warning',
-            'verified': 'success',
-            'rejected': 'danger',
+    def status_badge(self, obj):
+        colors = {
+            'pending': '#ffc107',
+            'verified': '#28a745',
+            'rejected': '#dc3545',
         }
-        return badge_classes.get(self.status, 'secondary')
+        color = colors.get(obj.status, '#6c757d')
+        return format_html(
+            '<span style="background-color: {}; color: white; padding: 3px 10px; '
+            'border-radius: 3px; font-weight: bold;">{}</span>',
+            color,
+            obj.get_status_display()
+        )
+    status_badge.short_description = 'Status'
+    
+    def qr_code_preview(self, obj):
+        if obj.qr_code:
+            return format_html(
+                '<img src="{}" style="max-width: 200px; max-height: 200px;" />',
+                obj.qr_code.url
+            )
+        return "Belum ada QR Code"
+    qr_code_preview.short_description = 'Preview QR Code'
+    
+    def id_card_preview(self, obj):
+        if obj.id_card_photo:
+            return format_html(
+                '<img src="{}" style="max-width: 300px; max-height: 300px;" />',
+                obj.id_card_photo.url
+            )
+        return "Belum ada foto KTP"
+    id_card_preview.short_description = 'Preview KTP'
+    
+    def selfie_preview(self, obj):
+        if obj.selfie_photo:
+            return format_html(
+                '<img src="{}" style="max-width: 300px; max-height: 300px;" />',
+                obj.selfie_photo.url
+            )
+        return "Belum ada foto selfie"
+    selfie_preview.short_description = 'Preview Selfie'
+    
+    def verify_checkins(self, request, queryset):
+        updated = queryset.filter(status='pending').update(
+            status='verified',
+            verified_by=request.user,
+            verified_at=timezone.now()
+        )
+        self.message_user(
+            request,
+            f'{updated} check-in berhasil diverifikasi.'
+        )
+    verify_checkins.short_description = 'Verifikasi check-in terpilih'
+    
+    def reject_checkins(self, request, queryset):
+        updated = queryset.filter(status='pending').update(
+            status='rejected',
+            verified_by=request.user,
+            verified_at=timezone.now()
+        )
+        self.message_user(
+            request,
+            f'{updated} check-in berhasil ditolak.'
+        )
+    reject_checkins.short_description = 'Tolak check-in terpilih'
+    
+    def save_model(self, request, obj, form, change):
+        if change and 'status' in form.changed_data:
+            if obj.status in ['verified', 'rejected']:
+                if not obj.verified_by:
+                    obj.verified_by = request.user
+                if not obj.verified_at:
+                    obj.verified_at = timezone.now()
+        super().save_model(request, obj, form, change)
