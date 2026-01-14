@@ -1,0 +1,578 @@
+<!-- templates/dashboard/admin/verify_booking.html -->
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Summit Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-content {
+        padding: 100px 30px 80px;
+        min-height: calc(100vh - 200px);
+        background: #f5f7fa;
+    }
+
+    /* Booking Header */
+    .booking-header {
+        background: linear-gradient(135deg, #2D5016, #3d6b1e);
+        color: white;
+        padding: 30px;
+        border-radius: 12px;
+        margin-bottom: 30px;
+    }
+
+    .booking-code {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+    }
+
+    /* Verification Card */
+    .verification-card {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    /* Info Row */
+    .info-row {
+        padding: 15px 0;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .info-row:last-child {
+        border-bottom: none;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #6c757d;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 5px;
+    }
+
+    .info-value {
+        font-size: 16px;
+        color: #1a1a1a;
+    }
+
+    /* Payment Proof */
+    .payment-proof {
+        max-width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .payment-proof:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Participants Table */
+    .participants-table {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .participants-table th {
+        background: #f8f9fa;
+        padding: 12px;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .participants-table td {
+        padding: 12px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    /* Action Buttons */
+    .action-section {
+        background: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        position: sticky;
+        top: 100px;
+    }
+
+    .btn-verify-large {
+        width: 100%;
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-verify-large:hover {
+        background: #218838;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+
+    .btn-reject-large {
+        width: 100%;
+        background: #dc3545;
+        color: white;
+        border: none;
+        padding: 15px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 16px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-reject-large:hover {
+        background: #c82333;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+
+    .btn-back {
+        background: white;
+        border: 2px solid #2D5016;
+        color: #2D5016;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+        margin-bottom: 20px;
+    }
+
+    .btn-back:hover {
+        background: #2D5016;
+        color: white;
+    }
+
+    /* Status Badge */
+    .badge-status-large {
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .badge-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .badge-paid {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .badge-confirmed {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .badge-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    /* Modal Image */
+    .modal-image {
+        width: 100%;
+        max-height: 600px;
+        object-fit: contain;
+    }
+
+    @media (max-width: 768px) {
+        .action-section {
+            position: static;
+            margin-top: 25px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-content">
+    <div class="container">
+        <!-- Back Button -->
+        <a href="{% url 'dashboard:admin-bookings' %}" class="btn-back">
+            <i class="bi bi-arrow-left me-2"></i>Kembali ke Daftar Booking
+        </a>
+
+        <!-- Booking Header -->
+        <div class="booking-header">
+            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3">
+                <div>
+                    <h1 class="booking-code">{{ booking.booking_code }}</h1>
+                    <p class="mb-0 opacity-75">
+                        <i class="bi bi-calendar-event me-2"></i>
+                        Dibuat: {{ booking.created_at|date:"d F Y, H:i" }} WITA
+                    </p>
+                </div>
+                <div>
+                    <span class="badge-status-large badge-{{ booking.status }}">
+                        {{ booking.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Left Column: Booking Details -->
+            <div class="col-lg-8">
+                <!-- Customer Information -->
+                <div class="verification-card">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-person-circle text-success me-2"></i>
+                        Informasi Pemesan
+                    </h4>
+
+                    <div class="info-row">
+                        <div class="info-label">Nama Lengkap</div>
+                        <div class="info-value">{{ booking.user.get_full_name|default:booking.user.email }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{ booking.user.email }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Nomor Telepon</div>
+                        <div class="info-value">{{ booking.user.phone_number|default:"-" }}</div>
+                    </div>
+                </div>
+
+                <!-- Booking Details -->
+                <div class="verification-card">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-calendar-check text-success me-2"></i>
+                        Detail Booking
+                    </h4>
+
+                    <div class="info-row">
+                        <div class="info-label">Jalur Pendakian</div>
+                        <div class="info-value">
+                            <strong>{{ booking.route.mountain.name }}</strong> - {{ booking.route.name }}
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Tanggal Pendakian</div>
+                        <div class="info-value">
+                            {{ booking.start_date|date:"d F Y" }} - {{ booking.end_date|date:"d F Y" }}
+                            ({{ booking.duration }} hari)
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Jumlah Pendaki</div>
+                        <div class="info-value">{{ booking.number_of_climbers }} orang</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Total Harga</div>
+                        <div class="info-value">
+                            <strong class="text-success fs-4">Rp {{ booking.total_price|floatformat:0 }}</strong>
+                        </div>
+                    </div>
+
+                    {% if booking.special_requests %}
+                    <div class="info-row">
+                        <div class="info-label">Permintaan Khusus</div>
+                        <div class="info-value">
+                            <div class="alert alert-info mb-0">
+                                {{ booking.special_requests }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Participants -->
+                <div class="verification-card">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-people text-success me-2"></i>
+                        Daftar Peserta ({{ booking.participants.count }})
+                    </h4>
+
+                    <div class="table-responsive">
+                        <table class="participants-table">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Lengkap</th>
+                                    <th>NIK/Paspor</th>
+                                    <th>Jenis Kelamin</th>
+                                    <th>Tanggal Lahir</th>
+                                    <th>Kontak</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for participant in booking.participants.all %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><strong>{{ participant.full_name }}</strong></td>
+                                    <td>{{ participant.id_number }}</td>
+                                    <td>{{ participant.get_gender_display }}</td>
+                                    <td>{{ participant.date_of_birth|date:"d M Y" }}</td>
+                                    <td>{{ participant.phone_number }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Payment Proof -->
+                {% if booking.payment_proof %}
+                <div class="verification-card">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-receipt text-success me-2"></i>
+                        Bukti Pembayaran
+                    </h4>
+
+                    <div class="text-center">
+                        <img src="{{ booking.payment_proof.url }}" 
+                             alt="Bukti Pembayaran" 
+                             class="payment-proof"
+                             data-bs-toggle="modal"
+                             data-bs-target="#paymentModal">
+                        <p class="text-muted mt-3">
+                            <small>Klik gambar untuk memperbesar</small>
+                        </p>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Payment Information -->
+                <div class="verification-card">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-credit-card text-success me-2"></i>
+                        Informasi Pembayaran
+                    </h4>
+
+                    <div class="info-row">
+                        <div class="info-label">Metode Pembayaran</div>
+                        <div class="info-value">{{ booking.get_payment_method_display|default:"-" }}</div>
+                    </div>
+
+                    {% if booking.payment_date %}
+                    <div class="info-row">
+                        <div class="info-label">Tanggal Pembayaran</div>
+                        <div class="info-value">{{ booking.payment_date|date:"d F Y, H:i" }}</div>
+                    </div>
+                    {% endif %}
+
+                    {% if booking.confirmed_at %}
+                    <div class="info-row">
+                        <div class="info-label">Dikonfirmasi</div>
+                        <div class="info-value">{{ booking.confirmed_at|date:"d F Y, H:i" }} WITA</div>
+                    </div>
+                    {% endif %}
+
+                    {% if booking.cancellation_reason %}
+                    <div class="info-row">
+                        <div class="info-label">Alasan Pembatalan</div>
+                        <div class="info-value">
+                            <div class="alert alert-danger mb-0">
+                                {{ booking.cancellation_reason }}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Right Column: Actions -->
+            <div class="col-lg-4">
+                <div class="action-section">
+                    <h5 class="fw-bold mb-4 text-center">
+                        <i class="bi bi-check-circle text-success me-2"></i>
+                        Verifikasi Pembayaran
+                    </h5>
+
+                    {% if booking.status == 'paid' %}
+                    <!-- Verify Form -->
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="confirm">
+                        
+                        <div class="alert alert-info">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <small>Pastikan bukti pembayaran valid sebelum konfirmasi</small>
+                        </div>
+
+                        <button type="submit" class="btn-verify-large">
+                            <i class="bi bi-check-circle-fill me-2"></i>
+                            Konfirmasi Pembayaran
+                        </button>
+                    </form>
+
+                    <!-- Reject Button -->
+                    <button type="button" 
+                            class="btn-reject-large"
+                            data-bs-toggle="modal"
+                            data-bs-target="#rejectModal">
+                        <i class="bi bi-x-circle-fill me-2"></i>
+                        Tolak Pembayaran
+                    </button>
+
+                    {% elif booking.status == 'confirmed' %}
+                    <div class="alert alert-success text-center">
+                        <i class="bi bi-check-circle-fill fs-1 d-block mb-3"></i>
+                        <strong>Booking Sudah Dikonfirmasi</strong>
+                        <p class="mb-0 mt-2 small">{{ booking.confirmed_at|date:"d F Y, H:i" }}</p>
+                    </div>
+
+                    {% elif booking.status == 'cancelled' %}
+                    <div class="alert alert-danger text-center">
+                        <i class="bi bi-x-circle-fill fs-1 d-block mb-3"></i>
+                        <strong>Booking Dibatalkan</strong>
+                        {% if booking.cancellation_reason %}
+                        <p class="mb-0 mt-2 small">{{ booking.cancellation_reason }}</p>
+                        {% endif %}
+                    </div>
+
+                    {% else %}
+                    <div class="alert alert-warning text-center">
+                        <i class="bi bi-exclamation-triangle-fill fs-1 d-block mb-3"></i>
+                        <strong>Menunggu Pembayaran</strong>
+                        <p class="mb-0 mt-2 small">Customer belum upload bukti pembayaran</p>
+                    </div>
+                    {% endif %}
+
+                    <!-- Quick Info -->
+                    <div class="mt-4 pt-4 border-top">
+                        <h6 class="fw-bold mb-3">Informasi Cepat</h6>
+                        <ul class="list-unstyled small">
+                            <li class="mb-2">
+                                <i class="bi bi-calendar-event text-success me-2"></i>
+                                Dibuat {{ booking.created_at|timesince }} yang lalu
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-mountain text-success me-2"></i>
+                                {{ booking.route.mountain.name }}
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-people text-success me-2"></i>
+                                {{ booking.number_of_climbers }} pendaki
+                            </li>
+                            <li class="mb-2">
+                                <i class="bi bi-cash-coin text-success me-2"></i>
+                                Rp {{ booking.total_price|floatformat:0 }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Payment Proof Modal -->
+{% if booking.payment_proof %}
+<div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Bukti Pembayaran - {{ booking.booking_code }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-center bg-dark">
+                <img src="{{ booking.payment_proof.url }}" class="modal-image" alt="Bukti Pembayaran">
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+<!-- Reject Modal -->
+<div class="modal fade" id="rejectModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="reject">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-x-circle me-2"></i>
+                        Tolak Pembayaran
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        Anda yakin ingin menolak booking <strong>{{ booking.booking_code }}</strong>?
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Alasan Penolakan <span class="text-danger">*</span>
+                        </label>
+                        <textarea name="reason" 
+                                  class="form-control" 
+                                  rows="4" 
+                                  placeholder="Jelaskan alasan penolakan (misalnya: bukti pembayaran tidak valid, nominal tidak sesuai, dll.)"
+                                  required></textarea>
+                        <small class="text-muted">
+                            Alasan ini akan dikirim ke customer.
+                        </small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="bi bi-x me-2"></i>Batal
+                    </button>
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-x-circle me-2"></i>Ya, Tolak Booking
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Format currency
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.text-success').forEach(function(el) {
+            if (el.textContent.includes('Rp')) {
+                const value = el.textContent.replace(/[^\d]/g, '');
+                if (value) {
+                    el.textContent = 'Rp ' + parseInt(value).toLocaleString('id-ID');
+                }
+            }
+        });
+    });
+
+    // Confirm verification
+    document.querySelectorAll('form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            const action = this.querySelector('input[name="action"]').value;
+            if (action === 'confirm') {
+                if (!confirm('Anda yakin ingin mengkonfirmasi booking ini?')) {
+                    e.preventDefault();
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
