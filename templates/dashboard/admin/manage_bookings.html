@@ -1,0 +1,607 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Summit Book{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Admin Sidebar */
+    .admin-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 260px;
+        background: linear-gradient(180deg, #1a1a1a 0%, #0d0d0d 100%);
+        padding-top: 80px;
+        overflow-y: auto;
+        z-index: 999;
+        transition: all 0.3s ease;
+        box-shadow: 4px 0 15px rgba(0,0,0,0.2);
+    }
+
+    .admin-sidebar::-webkit-scrollbar {
+        width: 5px;
+    }
+
+    .admin-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(45, 80, 22, 0.5);
+        border-radius: 10px;
+    }
+
+    .admin-content {
+        margin-left: 260px;
+        padding: 100px 30px 80px;
+        min-height: calc(100vh - 200px);
+        background: #f5f7fa;
+    }
+
+    footer {
+        margin-left: 260px;
+        transition: margin-left 0.3s ease;
+    }
+
+    .sidebar-header {
+        padding: 0 25px 20px;
+        border-bottom: 1px solid rgba(255,255,255,0.1);
+        margin-bottom: 20px;
+    }
+
+    .sidebar-header h5 {
+        color: white;
+        margin: 0;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .sidebar-header p {
+        color: #b8b8b8;
+        margin: 5px 0 0;
+        font-size: 12px;
+    }
+
+    .sidebar-menu {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .sidebar-menu li {
+        margin-bottom: 5px;
+    }
+
+    .sidebar-menu a {
+        display: flex;
+        align-items: center;
+        padding: 14px 25px;
+        color: #b8b8b8;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .sidebar-menu a:hover,
+    .sidebar-menu a.active {
+        background: rgba(45, 80, 22, 0.2);
+        color: white;
+        padding-left: 30px;
+    }
+
+    .sidebar-menu a i {
+        width: 24px;
+        margin-right: 12px;
+        font-size: 18px;
+    }
+
+    .sidebar-menu a.active::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        height: 100%;
+        width: 4px;
+        background: #2D5016;
+    }
+
+    /* Page Header */
+    .page-header {
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    .page-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+    }
+
+    /* Filter Card */
+    .filter-card {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        margin-bottom: 25px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Booking Card */
+    .booking-card {
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border-left: 4px solid #2D5016;
+    }
+
+    .booking-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+    }
+
+    .booking-card.pending {
+        border-left-color: #ffc107;
+    }
+
+    .booking-card.paid {
+        border-left-color: #17a2b8;
+    }
+
+    .booking-card.confirmed {
+        border-left-color: #28a745;
+    }
+
+    .booking-card.cancelled {
+        border-left-color: #dc3545;
+    }
+
+    .booking-card.completed {
+        border-left-color: #007bff;
+    }
+
+    /* Status Badges */
+    .badge-status {
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .badge-paid {
+        background: #d1ecf1;
+        color: #0c5460;
+    }
+
+    .badge-confirmed {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .badge-cancelled {
+        background: #f8d7da;
+        color: #721c24;
+    }
+
+    .badge-completed {
+        background: #d1e7ff;
+        color: #004085;
+    }
+
+    /* User Avatar */
+    .user-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 12px;
+        background: linear-gradient(135deg, #2D5016, #3d6b1e);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-weight: 700;
+        font-size: 20px;
+    }
+
+    /* Action Buttons */
+    .btn-action {
+        padding: 8px 16px;
+        border-radius: 6px;
+        font-weight: 600;
+        font-size: 13px;
+        transition: all 0.3s ease;
+        border: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .btn-action:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-view {
+        background: #2D5016;
+        color: white;
+    }
+
+    .btn-view:hover {
+        background: #1a2f0c;
+        color: white;
+    }
+
+    .btn-verify {
+        background: #28a745;
+        color: white;
+    }
+
+    .btn-verify:hover {
+        background: #218838;
+        color: white;
+    }
+
+    /* Stats Summary */
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .stat-box {
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        text-align: center;
+    }
+
+    .stat-box h3 {
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0 0 5px 0;
+    }
+
+    .stat-box p {
+        margin: 0;
+        color: #6c757d;
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    /* Empty State */
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: white;
+        border-radius: 12px;
+    }
+
+    .empty-state i {
+        font-size: 64px;
+        color: #6c757d;
+        opacity: 0.3;
+        margin-bottom: 20px;
+    }
+
+    /* Responsive */
+    @media (max-width: 992px) {
+        .admin-sidebar {
+            transform: translateX(-100%);
+        }
+
+        .admin-sidebar.show {
+            transform: translateX(0);
+        }
+
+        .admin-content {
+            margin-left: 0;
+        }
+
+        footer {
+            margin-left: 0;
+        }
+
+        .mobile-menu-toggle {
+            display: flex;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: #2D5016;
+            color: white;
+            border-radius: 50%;
+            border: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+    }
+
+    @media (min-width: 993px) {
+        .mobile-menu-toggle {
+            display: none;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Sidebar -->
+<aside class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+        <h5><i class="bi bi-mountain text-success"></i> Admin Panel</h5>
+        <p>{{ user.get_full_name|default:user.email }}</p>
+    </div>
+    
+    <ul class="sidebar-menu">
+        <li>
+            <a href="{% url 'dashboard:admin' %}">
+                <i class="bi bi-speedometer2"></i>
+                <span>Dashboard</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:admin-bookings' %}" class="active">
+                <i class="bi bi-calendar-check"></i>
+                <span>Kelola Booking</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:admin-checkins' %}">
+                <i class="bi bi-person-check"></i>
+                <span>Verifikasi Check-in</span>
+            </a>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:admin-reports' %}">
+                <i class="bi bi-bar-chart-line"></i>
+                <span>Laporan & Statistik</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="event.preventDefault();">
+                <i class="bi bi-mountain"></i>
+                <span>Kelola Gunung</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="event.preventDefault();">
+                <i class="bi bi-map"></i>
+                <span>Kelola Jalur</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="event.preventDefault();">
+                <i class="bi bi-people"></i>
+                <span>Kelola User</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" onclick="event.preventDefault();">
+                <i class="bi bi-gear"></i>
+                <span>Pengaturan</span>
+            </a>
+        </li>
+    </ul>
+</aside>
+
+<!-- Main Content -->
+<div class="admin-content">
+    <!-- Page Header -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h1 class="page-title">
+                    <i class="bi bi-calendar-check text-success me-2"></i>
+                    Kelola Booking
+                </h1>
+                <p class="text-muted mb-0">Kelola semua booking pendakian</p>
+            </div>
+            <div>
+                <button class="btn btn-success" onclick="window.print()">
+                    <i class="bi bi-printer me-2"></i>Export PDF
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Stats Summary -->
+    <div class="stats-row">
+        <div class="stat-box">
+            <h3 class="text-warning">{{ bookings|length }}</h3>
+            <p>Total Booking</p>
+        </div>
+        <div class="stat-box">
+            <h3 class="text-info">{% widthratio bookings|length 1 1 %}</h3>
+            <p>Perlu Diverifikasi</p>
+        </div>
+        <div class="stat-box">
+            <h3 class="text-success">0</h3>
+            <p>Terkonfirmasi</p>
+        </div>
+        <div class="stat-box">
+            <h3 class="text-danger">0</h3>
+            <p>Dibatalkan</p>
+        </div>
+    </div>
+
+    <!-- Filter -->
+    <div class="filter-card">
+        <form method="GET" class="row g-3">
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Status</label>
+                <select name="status" class="form-select">
+                    <option value="">Semua Status</option>
+                    <option value="pending" {% if status == 'pending' %}selected{% endif %}>Pending</option>
+                    <option value="paid" {% if status == 'paid' %}selected{% endif %}>Dibayar</option>
+                    <option value="confirmed" {% if status == 'confirmed' %}selected{% endif %}>Terkonfirmasi</option>
+                    <option value="cancelled" {% if status == 'cancelled' %}selected{% endif %}>Dibatalkan</option>
+                    <option value="completed" {% if status == 'completed' %}selected{% endif %}>Selesai</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Tanggal Dari</label>
+                <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Tanggal Sampai</label>
+                <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-semibold">Pencarian</label>
+                <input type="text" name="search" class="form-control" placeholder="Cari kode, nama..." value="{{ search }}">
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-success me-2">
+                    <i class="bi bi-search me-1"></i>Filter
+                </button>
+                <a href="{% url 'dashboard:admin-bookings' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle me-1"></i>Reset
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Booking List -->
+    {% if bookings %}
+        {% for booking in bookings %}
+        <div class="booking-card {{ booking.status }}">
+            <div class="row align-items-center">
+                <!-- User Info -->
+                <div class="col-lg-3">
+                    <div class="d-flex align-items-center">
+                        <div class="user-avatar me-3">
+                            {{ booking.user.first_name|default:booking.user.email|slice:":1"|upper }}
+                        </div>
+                        <div>
+                            <h6 class="mb-1 fw-bold">{{ booking.user.get_full_name|default:booking.user.email }}</h6>
+                            <small class="text-muted d-block">{{ booking.user.email }}</small>
+                            <small class="text-muted">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                {{ booking.created_at|date:"d M Y" }}
+                            </small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking Details -->
+                <div class="col-lg-3">
+                    <small class="text-muted d-block">Kode Booking</small>
+                    <strong class="text-success d-block">{{ booking.booking_code }}</strong>
+                    <small class="text-muted">{{ booking.route.mountain.name }}</small>
+                </div>
+
+                <div class="col-lg-2">
+                    <small class="text-muted d-block">Tanggal Pendakian</small>
+                    <strong class="d-block">{{ booking.start_date|date:"d M Y" }}</strong>
+                    <small class="text-muted">{{ booking.number_of_climbers }} pendaki</small>
+                </div>
+
+                <div class="col-lg-2">
+                    <small class="text-muted d-block">Total</small>
+                    <strong class="text-success d-block">Rp {{ booking.total_price|floatformat:0 }}</strong>
+                    <span class="badge-status badge-{{ booking.status }}">
+                        {{ booking.get_status_display }}
+                    </span>
+                </div>
+
+                <!-- Actions -->
+                <div class="col-lg-2 text-end">
+                    <div class="d-flex flex-column gap-2">
+                        <a href="{% url 'dashboard:admin-verify-booking' booking.id %}" 
+                           class="btn-action btn-view">
+                            <i class="bi bi-eye"></i>Detail
+                        </a>
+                        {% if booking.status == 'paid' %}
+                        <a href="{% url 'dashboard:admin-verify-booking' booking.id %}" 
+                           class="btn-action btn-verify">
+                            <i class="bi bi-check-circle"></i>Verifikasi
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Additional Info -->
+            {% if booking.special_requests %}
+            <div class="row mt-3">
+                <div class="col-12">
+                    <div class="alert alert-info mb-0 py-2">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Permintaan Khusus:</strong> {{ booking.special_requests }}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+
+        <!-- Pagination (if needed) -->
+        <div class="text-center mt-4">
+            <p class="text-muted">Menampilkan {{ bookings|length }} booking</p>
+        </div>
+    {% else %}
+    <div class="empty-state">
+        <i class="bi bi-inbox"></i>
+        <h5>Tidak Ada Booking</h5>
+        <p class="text-muted">
+            {% if status or search or date_from or date_to %}
+                Tidak ada booking yang sesuai dengan filter
+            {% else %}
+                Belum ada booking yang perlu dikelola
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Mobile Menu Toggle -->
+<button class="mobile-menu-toggle" id="mobileMenuToggle">
+    <i class="bi bi-list fs-4"></i>
+</button>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Mobile Menu Toggle
+    const sidebar = document.getElementById('adminSidebar');
+    const mobileToggle = document.getElementById('mobileMenuToggle');
+
+    if (mobileToggle) {
+        mobileToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+                sidebar.classList.remove('show');
+            }
+        });
+    }
+
+    // Format currency
+    document.querySelectorAll('.text-success').forEach(function(el) {
+        if (el.textContent.includes('Rp')) {
+            const value = el.textContent.replace(/[^\d]/g, '');
+            if (value) {
+                el.textContent = 'Rp ' + parseInt(value).toLocaleString('id-ID');
+            }
+        }
+    });
+</script>
+{% endblock %}
