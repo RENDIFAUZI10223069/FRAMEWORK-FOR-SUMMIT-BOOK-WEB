@@ -45,7 +45,7 @@
                         </div>
                         <div class="col-md-3">
                             <small class="text-muted">Jumlah Peserta</small>
-                            <p class="fw-bold mb-0">{{ booking.num_participants }} orang</p>
+                            <p class="fw-bold mb-0">{{ booking.number_of_climbers }} orang</p>
                         </div>
                     </div>
                 </div>
@@ -61,11 +61,14 @@
                                 Data Peserta {{ current_count }} dari {{ total_count }}
                             </h4>
                             
-                            <form method="POST">
+                            <form method="POST" enctype="multipart/form-data">
                                 {% csrf_token %}
                                 
                                 <!-- Data Diri -->
-                                <h6 class="fw-bold mb-3 mt-4">Data Diri</h6>
+                                <h6 class="fw-bold mb-3 mt-4">
+                                    <i class="bi bi-person-circle text-success me-2"></i>
+                                    Data Diri
+                                </h6>
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Nama Lengkap <span class="text-danger">*</span></label>
@@ -123,9 +126,50 @@
                                         {% endif %}
                                     </div>
                                 </div>
+
+                                <!-- NEW: Alamat -->
+                                <h6 class="fw-bold mb-3 mt-4">
+                                    <i class="bi bi-geo-alt text-success me-2"></i>
+                                    Alamat Lengkap
+                                </h6>
+                                <div class="mb-3">
+                                    <label class="form-label">Alamat <span class="text-danger">*</span></label>
+                                    {{ form.address }}
+                                    <small class="text-muted d-block">Jalan, RT/RW, Kelurahan, Kecamatan</small>
+                                    {% if form.address.errors %}
+                                    <div class="text-danger small">{{ form.address.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Kota/Kabupaten <span class="text-danger">*</span></label>
+                                        {{ form.city }}
+                                        {% if form.city.errors %}
+                                        <div class="text-danger small">{{ form.city.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Provinsi <span class="text-danger">*</span></label>
+                                        {{ form.province }}
+                                        {% if form.province.errors %}
+                                        <div class="text-danger small">{{ form.province.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label class="form-label">Kode Pos</label>
+                                        {{ form.postal_code }}
+                                        {% if form.postal_code.errors %}
+                                        <div class="text-danger small">{{ form.postal_code.errors.0 }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
                                 
                                 <!-- Kontak Darurat -->
-                                <h6 class="fw-bold mb-3 mt-4">Kontak Darurat</h6>
+                                <h6 class="fw-bold mb-3 mt-4">
+                                    <i class="bi bi-telephone text-success me-2"></i>
+                                    Kontak Darurat
+                                </h6>
                                 <div class="alert alert-warning small">
                                     <i class="bi bi-exclamation-triangle me-2"></i>
                                     Wajib diisi untuk keperluan keselamatan selama pendakian
@@ -156,8 +200,13 @@
                                     {% endif %}
                                 </div>
                                 
-                                <!-- Health Notes -->
-                                <div class="mb-4">
+                                <!-- Health -->
+                                <h6 class="fw-bold mb-3 mt-4">
+                                    <i class="bi bi-heart-pulse text-success me-2"></i>
+                                    Informasi Kesehatan
+                                </h6>
+
+                                <div class="mb-3">
                                     <label class="form-label">Catatan Kesehatan (Opsional)</label>
                                     {{ form.health_notes }}
                                     <small class="text-muted d-block">Riwayat penyakit, alergi, atau kondisi khusus lainnya</small>
@@ -165,12 +214,31 @@
                                     <div class="text-danger small">{{ form.health_notes.errors.0 }}</div>
                                     {% endif %}
                                 </div>
+
+                                <!-- NEW: Surat Keterangan Sehat -->
+                                <div class="mb-4">
+                                    <label class="form-label">
+                                        Surat Keterangan Sehat <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.health_certificate }}
+                                    <div class="form-text">
+                                        <i class="bi bi-info-circle me-1"></i>
+                                        Upload surat keterangan sehat dari dokter (PDF/JPG/PNG, max 2MB)
+                                        <br>
+                                        <small class="text-muted">
+                                            Surat keterangan sehat wajib untuk pendakian. Dapat diperoleh dari puskesmas atau klinik terdekat.
+                                        </small>
+                                    </div>
+                                    {% if form.health_certificate.errors %}
+                                    <div class="text-danger small">{{ form.health_certificate.errors.0 }}</div>
+                                    {% endif %}
+                                </div>
                                 
                                 <button type="submit" class="btn btn-success w-100 btn-lg">
                                     {% if current_count < total_count %}
-                                        Simpan & Lanjut Peserta Berikutnya <i class="bi bi-arrow-right ms-2"></i>
+                                        <i class="bi bi-save me-2"></i>Simpan & Lanjut Peserta Berikutnya
                                     {% else %}
-                                        Simpan & Lanjut ke Pembayaran <i class="bi bi-arrow-right ms-2"></i>
+                                        <i class="bi bi-arrow-right me-2"></i>Simpan & Lanjut ke Pembayaran
                                     {% endif %}
                                 </button>
                             </form>
@@ -182,26 +250,51 @@
                 <div class="col-lg-4">
                     <div class="card shadow-sm sticky-top" style="top: 20px;">
                         <div class="card-body">
-                            <h6 class="fw-bold mb-3">Progress Pengisian</h6>
+                            <h6 class="fw-bold mb-3">
+                                <i class="bi bi-list-check text-success me-2"></i>
+                                Progress Pengisian
+                            </h6>
                             <div class="progress mb-3" style="height: 25px;">
-                                <div class="progress-bar bg-success" style="width: {{ current_count|add:'-1' }}0%">
-                                    {{ current_count|add:'-1' }}/{{ total_count }}
+                                <div class="progress-bar bg-success" 
+                                     style="width: {% widthratio current_count total_count 100 %}%"
+                                     role="progressbar">
+                                    {{ current_count }}/{{ total_count }}
                                 </div>
                             </div>
                             
-                            <h6 class="fw-bold mb-3 mt-4">Peserta Terdaftar</h6>
+                            <h6 class="fw-bold mb-3 mt-4">
+                                <i class="bi bi-people text-success me-2"></i>
+                                Peserta Terdaftar
+                            </h6>
                             {% if existing_participants %}
                             <ul class="list-group list-group-flush">
                                 {% for p in existing_participants %}
-                                <li class="list-group-item px-0">
-                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
-                                    {{ p.full_name }}
+                                <li class="list-group-item px-0 d-flex align-items-start">
+                                    <i class="bi bi-check-circle-fill text-success me-2 mt-1"></i>
+                                    <div class="flex-grow-1">
+                                        <strong class="d-block">{{ p.full_name }}</strong>
+                                        <small class="text-muted">{{ p.id_number }}</small>
+                                    </div>
                                 </li>
                                 {% endfor %}
                             </ul>
                             {% else %}
-                            <p class="text-muted small">Belum ada peserta terdaftar</p>
+                            <div class="text-center text-muted py-3">
+                                <i class="bi bi-person-x fs-3 d-block mb-2 opacity-25"></i>
+                                <small>Belum ada peserta terdaftar</small>
+                            </div>
                             {% endif %}
+
+                            <!-- Info Box -->
+                            <div class="alert alert-info mt-4 small">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Info:</strong>
+                                <ul class="mb-0 mt-2 ps-3">
+                                    <li>Data yang sudah diisi tidak dapat diubah</li>
+                                    <li>Pastikan data sesuai dengan identitas</li>
+                                    <li>Surat keterangan sehat wajib dilampirkan</li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -257,6 +350,21 @@
     .step.completed .step-circle {
         background: #28a745;
         color: white;
+    }
+
+    /* Form sections */
+    h6.fw-bold {
+        border-left: 4px solid #2D5016;
+        padding-left: 12px;
+    }
+
+    /* File input preview */
+    .form-control[type="file"] {
+        cursor: pointer;
+    }
+
+    .form-control[type="file"]:hover {
+        border-color: #2D5016;
     }
 </style>
 {% endblock %}

@@ -47,37 +47,116 @@ class BookingForm(forms.ModelForm):
 
 
 class BookingParticipantForm(forms.ModelForm):
-    """Form untuk data peserta"""
-    
     class Meta:
         model = BookingParticipant
         fields = [
-            'full_name', 'id_number', 'date_of_birth', 'gender',
-            'phone_number', 'email', 'blood_type',
-            'emergency_contact_name', 'emergency_contact_phone',
-            'emergency_contact_relation', 'health_notes'
+            'full_name', 'id_number', 'date_of_birth', 'gender', 'blood_type',
+            'phone_number', 'email',
+            'address', 'city', 'province', 'postal_code',  # NEW
+            'emergency_contact_name', 'emergency_contact_phone', 'emergency_contact_relation',
+            'health_notes',
+            'health_certificate'  # NEW
         ]
         widgets = {
-            'full_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Sesuai KTP'}),
-            'id_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'NIK 16 digit'}),
-            'date_of_birth': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'gender': forms.Select(attrs={'class': 'form-select'}),
-            'phone_number': forms.TextInput(attrs={'class': 'form-control', 'placeholder': '08xxxxxxxxxx'}),
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'blood_type': forms.Select(attrs={'class': 'form-select'}),
-            'emergency_contact_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'emergency_contact_phone': forms.TextInput(attrs={'class': 'form-control'}),
-            'emergency_contact_relation': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Contoh: Orang Tua'}),
-            'health_notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3, 'placeholder': 'Riwayat penyakit, alergi, dll (opsional)'}),
+            'full_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nama lengkap sesuai KTP'
+            }),
+            'id_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Contoh: 3201234567890123'
+            }),
+            'date_of_birth': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'gender': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'blood_type': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'phone_number': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '08123456789'
+            }),
+            'email': forms.EmailInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'email@example.com'
+            }),
+            # NEW: Address fields
+            'address': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Jalan, RT/RW, Kelurahan, Kecamatan'
+            }),
+            'city': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Contoh: Bandung'
+            }),
+            'province': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Contoh: Jawa Barat'
+            }),
+            'postal_code': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Contoh: 40123'
+            }),
+            'emergency_contact_name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Nama keluarga/kerabat terdekat'
+            }),
+            'emergency_contact_phone': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': '08123456789'
+            }),
+            'emergency_contact_relation': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Contoh: Ayah, Ibu, Saudara, Teman'
+            }),
+            'health_notes': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Contoh: Alergi obat, Asma, Diabetes, dll'
+            }),
+            # NEW: Health certificate upload
+            'health_certificate': forms.FileInput(attrs={
+                'class': 'form-control',
+                'accept': '.pdf,.jpg,.jpeg,.png'
+            }),
         }
     
-    def clean_date_of_birth(self):
-        dob = self.cleaned_data.get('date_of_birth')
-        min_age = date.today() - timedelta(days=17*365)
-        if dob > min_age:
-            raise ValidationError('Peserta harus berusia minimal 17 tahun')
-        return dob
-
+    def clean_id_number(self):
+        id_number = self.cleaned_data.get('id_number')
+        if len(id_number) < 10:
+            raise forms.ValidationError('Nomor identitas minimal 10 karakter')
+        return id_number
+    
+    def clean_phone_number(self):
+        phone = self.cleaned_data.get('phone_number')
+        if not phone.startswith('0'):
+            raise forms.ValidationError('Nomor telepon harus diawali dengan 0')
+        return phone
+    
+    def clean_emergency_contact_phone(self):
+        phone = self.cleaned_data.get('emergency_contact_phone')
+        if not phone.startswith('0'):
+            raise forms.ValidationError('Nomor telepon harus diawali dengan 0')
+        return phone
+    
+    def clean_health_certificate(self):
+        file = self.cleaned_data.get('health_certificate')
+        if file:
+            # Check file size (max 2MB)
+            if file.size > 2 * 1024 * 1024:
+                raise forms.ValidationError('Ukuran file maksimal 2MB')
+            
+            # Check file extension
+            ext = file.name.split('.')[-1].lower()
+            if ext not in ['pdf', 'jpg', 'jpeg', 'png']:
+                raise forms.ValidationError('Format file harus PDF, JPG, JPEG, atau PNG')
+        
+        return file
 
 class PaymentForm(forms.ModelForm):
     """Form untuk upload bukti pembayaran"""

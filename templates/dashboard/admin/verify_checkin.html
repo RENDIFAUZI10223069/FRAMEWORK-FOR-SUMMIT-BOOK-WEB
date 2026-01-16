@@ -402,12 +402,116 @@
 
                     <div class="info-row">
                         <div class="info-label">Tanggal Lahir</div>
-                        <div class="info-value">{{ checkin.participant.date_of_birth|date:"d F Y" }}</div>
+                        <div class="info-value">
+                            {{ checkin.participant.date_of_birth|date:"d F Y" }}
+                            <small class="text-muted">({{ checkin.participant.age }} tahun)</small>
+                        </div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Golongan Darah</div>
+                        <div class="info-value">{{ checkin.participant.blood_type }}</div>
                     </div>
 
                     <div class="info-row">
                         <div class="info-label">Nomor Kontak</div>
-                        <div class="info-value">{{ checkin.participant.phone_number }}</div>
+                        <div class="info-value">
+                            <div>{{ checkin.participant.phone_number }}</div>
+                            <div class="text-muted small">{{ checkin.participant.email }}</div>
+                        </div>
+                    </div>
+
+                    <!-- NEW: Alamat -->
+                    <h5 class="fw-bold mb-3 mt-4">
+                        <i class="bi bi-geo-alt text-success me-2"></i>
+                        Alamat
+                    </h5>
+
+                    <div class="info-row">
+                        <div class="info-label">Alamat Lengkap</div>
+                        <div class="info-value">{{ checkin.participant.address|default:"-" }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Kota/Kabupaten</div>
+                        <div class="info-value">{{ checkin.participant.city|default:"-" }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Provinsi</div>
+                        <div class="info-value">{{ checkin.participant.province|default:"-" }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Kode Pos</div>
+                        <div class="info-value">{{ checkin.participant.postal_code|default:"-" }}</div>
+                    </div>
+
+                    <!-- Kontak Darurat -->
+                    <h5 class="fw-bold mb-3 mt-4">
+                        <i class="bi bi-telephone text-success me-2"></i>
+                        Kontak Darurat
+                    </h5>
+
+                    <div class="info-row">
+                        <div class="info-label">Nama Kontak Darurat</div>
+                        <div class="info-value">{{ checkin.participant.emergency_contact_name }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Telepon Kontak Darurat</div>
+                        <div class="info-value">{{ checkin.participant.emergency_contact_phone }}</div>
+                    </div>
+
+                    <div class="info-row">
+                        <div class="info-label">Hubungan</div>
+                        <div class="info-value">{{ checkin.participant.emergency_contact_relation }}</div>
+                    </div>
+
+                    <!-- Kesehatan -->
+                    <h5 class="fw-bold mb-3 mt-4">
+                        <i class="bi bi-heart-pulse text-success me-2"></i>
+                        Informasi Kesehatan
+                    </h5>
+
+                    <div class="info-row">
+                        <div class="info-label">Catatan Kesehatan</div>
+                        <div class="info-value">
+                            {% if checkin.participant.health_notes %}
+                            <div class="alert alert-warning mb-0">
+                                <i class="bi bi-exclamation-triangle me-2"></i>
+                                {{ checkin.participant.health_notes }}
+                            </div>
+                            {% else %}
+                            <span class="text-muted">Tidak ada catatan khusus</span>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- NEW: Surat Keterangan Sehat -->
+                    <div class="info-row">
+                        <div class="info-label">Surat Keterangan Sehat</div>
+                        <div class="info-value">
+                            {% if checkin.participant.health_certificate %}
+                            <a href="{{ checkin.participant.health_certificate.url }}" 
+                               target="_blank" 
+                               class="btn btn-sm btn-success">
+                                <i class="bi bi-file-earmark-medical me-2"></i>
+                                Download Surat Keterangan Sehat
+                            </a>
+                            <br>
+                            <small class="text-muted mt-2 d-block">
+                                File: {{ checkin.participant.health_certificate.name|slice:"-40:" }}
+                            </small>
+                            {% else %}
+                            <span class="badge bg-danger">Belum Upload</span>
+                            <br>
+                            <small class="text-danger mt-2 d-block">
+                                <i class="bi bi-exclamation-triangle me-1"></i>
+                                Surat keterangan sehat wajib dilampirkan untuk verifikasi check-in
+                            </small>
+                            {% endif %}
+                        </div>
                     </div>
 
                     {% if checkin.notes %}
