@@ -116,57 +116,66 @@ class Booking(models.Model):
 
 
 class BookingParticipant(models.Model):
-    """Model untuk Data Peserta Booking"""
+    """Model untuk peserta pendakian"""
+    
+    GENDER_CHOICES = [
+        ('male', 'Laki-laki'),
+        ('female', 'Perempuan'),
+    ]
+    
+    BLOOD_TYPE_CHOICES = [
+        ('A', 'A'),
+        ('B', 'B'),
+        ('AB', 'AB'),
+        ('O', 'O'),
+    ]
     
     booking = models.ForeignKey(
         Booking,
         on_delete=models.CASCADE,
-        related_name='participants'
+        related_name='participants',
+        verbose_name='Booking'
     )
+    
+    # Data Pribadi
     full_name = models.CharField(max_length=200, verbose_name='Nama Lengkap')
     id_number = models.CharField(max_length=50, verbose_name='NIK/No. Identitas')
     date_of_birth = models.DateField(verbose_name='Tanggal Lahir')
-    gender = models.CharField(
-        max_length=10,
-        choices=[('male', 'Laki-laki'), ('female', 'Perempuan')],
-        verbose_name='Jenis Kelamin'
-    )
+    gender = models.CharField(max_length=10, choices=GENDER_CHOICES, verbose_name='Jenis Kelamin')
+    blood_type = models.CharField(max_length=3, choices=BLOOD_TYPE_CHOICES, verbose_name='Golongan Darah')
     phone_number = models.CharField(max_length=20, verbose_name='Nomor Telepon')
     email = models.EmailField(verbose_name='Email')
-    blood_type = models.CharField(
-        max_length=5,
-        choices=[('A', 'A'), ('B', 'B'), ('AB', 'AB'), ('O', 'O')],
-        verbose_name='Golongan Darah'
-    )
     
-    # Emergency Contact
-    emergency_contact_name = models.CharField(
-        max_length=200,
-        verbose_name='Nama Kontak Darurat'
-    )
-    emergency_contact_phone = models.CharField(
-        max_length=20,
-        verbose_name='Telepon Kontak Darurat'
-    )
-    emergency_contact_relation = models.CharField(
-        max_length=50,
-        verbose_name='Hubungan',
-        help_text='Contoh: Orang Tua, Saudara, Pasangan'
-    )
+    # NEW: Alamat
+    address = models.TextField(verbose_name='Alamat Lengkap', blank=True)
+    city = models.CharField(max_length=100, verbose_name='Kota/Kabupaten', blank=True)
+    province = models.CharField(max_length=100, verbose_name='Provinsi', blank=True)
+    postal_code = models.CharField(max_length=10, verbose_name='Kode Pos', blank=True)
     
-    # Health Info
-    health_notes = models.TextField(
+    # Kontak Darurat
+    emergency_contact_name = models.CharField(max_length=200, verbose_name='Nama Kontak Darurat')
+    emergency_contact_phone = models.CharField(max_length=20, verbose_name='Telepon Kontak Darurat')
+    emergency_contact_relation = models.CharField(max_length=50, verbose_name='Hubungan')
+    
+    # Kesehatan
+    health_notes = models.TextField(blank=True, verbose_name='Catatan Kesehatan')
+    
+    # NEW: Surat Keterangan Sehat
+    health_certificate = models.FileField(
+        upload_to='participants/health_certificates/',
         blank=True,
-        verbose_name='Catatan Kesehatan',
-        help_text='Riwayat penyakit, alergi, dll'
+        null=True,
+        verbose_name='Surat Keterangan Sehat'
     )
     
+    # Timestamps
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     
     class Meta:
-        verbose_name = 'Booking Participant'
-        verbose_name_plural = 'Booking Participants'
-        ordering = ['booking', 'full_name']
+        verbose_name = 'Peserta Booking'
+        verbose_name_plural = 'Peserta Booking'
+        ordering = ['-created_at']
     
     def __str__(self):
         return f"{self.full_name} - {self.booking.booking_code}"

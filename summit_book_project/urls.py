@@ -11,6 +11,7 @@ urlpatterns = [
     path('bookings/', include('bookings.urls')),        # Person 2
     path('checkins/', include('checkins.urls')),        # Person 3
     path('dashboard/', include('dashboard.urls')),      # Person 4 & 5
+    path('accounts/', include('allauth.urls')),  
 ]
 
 if settings.DEBUG:

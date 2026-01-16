@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load socialaccount %}
+
 
 {% block title %}Login - Summit Book{% endblock %}
 
@@ -163,17 +165,22 @@
                                     
                                     <!-- Social Login (Optional - untuk fase berikutnya) -->
                                     <div class="row g-2 mb-4">
-                                        <div class="col-6">
-                                            <button type="button" class="btn btn-outline-secondary w-100 social-login" disabled>
-                                                <i class="bi bi-google me-2"></i>Google
-                                            </button>
-                                        </div>
-                                        <div class="col-6">
-                                            <button type="button" class="btn btn-outline-secondary w-100 social-login" disabled>
-                                                <i class="bi bi-facebook me-2"></i>Facebook
-                                            </button>
-                                        </div>
-                                    </div>
+    <div class="col-6">
+        <a href="#" 
+           class="btn btn-outline-danger w-100 social-login">
+            <i class="bi bi-google me-2"></i>Google
+        </a>
+    </div>
+    <div class="col-6">
+        <a href="#" 
+           class="btn btn-outline-primary w-100 social-login">
+            <i class="bi bi-facebook me-2"></i>Facebook
+        </a>
+    </div>
+</div>
+
+    
+
                                     
                                     <!-- Register Link -->
                                     <p class="text-center mb-0">
